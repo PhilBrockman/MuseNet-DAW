@@ -1,0 +1,64 @@
+.grid-container {
+  display: grid;
+  grid-column-gap: 50px;
+  background-color: #CCC;
+  grid-template-columns: 150px auto;
+}
+
+.mini-area {
+  resize: vertical;
+  overflow: auto;
+}
+
+.active-area{
+  display:flex;
+  flex-direction:row;
+}
+
+.daw {
+  overflow:scroll;
+  width:700px;
+}
+
+.daw-cell, .keyNote {
+  min-width:40px;
+  min-height:30px;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.daw-cell {
+  border-left: 2px solid rgba(0, 0, 255, .4);
+  border-bottom: 1px solid green;
+} /*aeu  eu*/
+
+.natural {
+  background-color:white;
+
+}
+.accidental {
+  background-color: black;
+  color:white;
+}
+
+.background-cell {
+  background-color: rgba(50,50,50,.4);
+}
+
+.key-row {
+  display: flex;
+  flex-direction: row;
+}
+
+.note {
+  z-index: 2;
+  /* background-color: blue; */
+}
+
+.subdivision {
+  position: absolute;
+  box-sizing: border-box;
+  height:100%;
+  background-color:red;
+  border-left: 1px solid rgba(255, 255, 255, .4);
+}
