@@ -62,3 +62,11 @@
   background-color:red;
   border-left: 1px solid rgba(255, 255, 255, .4);
 }
+
+.playhead{
+  position: absolute;
+  box-sizing: border-box;
+  height:100%;
+  background-color:red;
+  border-left: 4px solid rgba(255, 255, 0, .4);
+}

@@ -9,12 +9,14 @@ export const Notes = (props) => {
       return track.notes.map((note, noteIndex) => {
         return <Note {...props}
                       note={note}
+
+                      keyName={trackIndex+"-"+noteIndex}
                       key={trackIndex+"-"+noteIndex}
                       inactive={trackIndex === props.activeTrack}
                       color={COLORS[trackIndex]}/>
       })
     } else {
-      return <></>
+      return <div key={trackIndex}></div>
     }
   })
 
@@ -45,5 +47,5 @@ const Note = (props) => {
     style.backgroundColor = "blue"
   }
 
-  return <div className="note" style={style}></div>
+  return <div className="note" style={style} key={props.keyName}></div>
 }

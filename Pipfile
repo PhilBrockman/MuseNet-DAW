@@ -9,6 +9,9 @@ marshmallow = "*"
 pymongo = "*"
 flask-oidc = "*"
 flask-cors = "*"
+ipython = "*"
+pretty-midi = "*"
+requests = "*"
 
 [dev-packages]
 

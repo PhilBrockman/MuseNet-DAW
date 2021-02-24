@@ -132,27 +132,31 @@ const ActiveArea = (props) => {
   }).reverse()
 
   return <>
-
-    <div>
-      <div className="accidental keyNote"></div>
-      {pianoKeys}
-    </div>
-            <div className="daw">
-              {header}
-              <div style={{position: "relative"}}>
-                {body}
-                <Notes
-                  minNote={minNote}
-                  offset={maxNote}
-                  {...props} />
-                <Subdivision
-                  numBeats={numBoxes}
-                  subdivision={props.subdivision}
-                  dawResolution={props.dawResolution}
-                  />
-              </div>
+          <Playhead />
+          <div>
+            <div className="accidental keyNote"></div>
+            {pianoKeys}
+          </div>
+          <div className="daw">
+            {header}
+            <div style={{position: "relative"}}>
+              {body}
+              <Notes
+                minNote={minNote}
+                offset={maxNote}
+                {...props} />
+              <Subdivision
+                numBeats={numBoxes}
+                subdivision={props.subdivision}
+                dawResolution={props.dawResolution}
+                />
             </div>
+          </div>
         </>
+}
+
+const Playhead = (props) => {
+  return <div className="playhead"></div>
 }
 
 const Subdivision = (props) => {
