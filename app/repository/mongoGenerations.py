@@ -8,6 +8,7 @@ class MongoGenerationRepository(object):
   def __init__(self):
     mongo_url = os.environ.get('MONGO_URL')
     self.db = MongoClient(mongo_url).generations
+    print(self.db)
 
   def find_all(self, selector):
     return self.db.generations.find(selector)

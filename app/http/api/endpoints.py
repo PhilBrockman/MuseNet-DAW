@@ -24,7 +24,7 @@ def sendMidi(path):
     if(path.endswith("mid")):
         return send_from_directory(f"../../../", filename=path, as_attachment= True, mimetype= "audio/midi")
     else:
-        return json_response({})
+        return json_response({"error": "File not found"})
 
 @app.route("/generation/<string:generation_id>/generate_midi", methods=["GET"])
 def mediaIndex(generation_id):
