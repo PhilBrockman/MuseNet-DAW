@@ -1,4 +1,3 @@
-import APIClient from './api/apiClient'
 import React from 'react'
 import { Provider } from 'react-redux';
 import {Generations} from "./generations/Generations"
@@ -14,12 +13,20 @@ store.dispatch(fetchGenerations())
 // import { SongEditor } from "DAW/SongEditor"
 // import {OptionList} from "Selection/OptionList"\
 
+const MuseNetFetcher = () => "Fetcher"
+
+
 const App = () => {
   return (
   <Provider store={store}>
-    <h1>Helloworld React & Redux!</h1>
-    <Generations />
-    <OptionList />
+    <div>
+      <div></div>
+      <div>
+        <OptionList />
+      </div>
+      <MuseNetFetcher />
+      <Generations />
+    </div>
   </Provider>)
 };
 

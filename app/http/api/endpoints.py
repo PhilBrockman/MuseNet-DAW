@@ -55,9 +55,15 @@ def index():
 def create():
   data = request.data.decode("UTF-8")
   data = json.loads(data)
-  generation = Generation().create_generation_for(data)
+  app.logger.info("cheking the kkeys:")
+  app.logger.info(data.keys())
+  try: 
+    generation = Generation().create_generation_for(data)
+  except:
+    return json_response({"error": "colud not create generation from data"}, 405)
 
   if generation:
+    app.logger.info(generation)
     return json_response(generation)
   else:
     return json_response({'error': 'generation not found'}, 404)

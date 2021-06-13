@@ -1,12 +1,10 @@
-import APIClient from "../api/apiClient"
+import api from "../api/apiClient"
 import {statusKeys} from "../utilities/utilities"
-
-const api = new APIClient("some token")
-
 
 const defaultState = {
   status: "idle",
-  generations: []
+  generations: [],
+  parent: null,
 }
 
 const changeFetchStatus = status => {
@@ -16,17 +14,35 @@ const changeFetchStatus = status => {
   }
 }
 
-function delay(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
 export const fetchGenerations = () => {
   return async function fetchGenerationsThunk(dispatch) {
     dispatch(changeFetchStatus(statusKeys.LOADING))
-    // await delay(2000);
     const generations = await api.generations();
-    console.log('generations', generations)
-    dispatch({ type: 'LOAD_GENERATIONS', payload: {data: generations.data, status: generations.status} })
+    dispatch({ type: 'LOAD_GENERATIONS', payload: {generations: generations.data, status: generations.status} })
+  }
+}
+
+export const createGeneration = (preppedSelections) => {
+  const loadMedio = async (ids) => {
+    ids.data.forEach(id => {
+      console.log('id', id)
+      api.createMediaForGeneration(id["$oid"])
+    })
+  }
+
+  return async function fetchGenerationsThunk(dispatch) {
+    console.log("dispatching create generation")
+    dispatch(changeFetchStatus(statusKeys.LOADING))
+    const newIds = await api.createGeneration(preppedSelections);
+    await loadMedio(newIds)
+    dispatch(fetchGenerations());
+  }
+}
+
+export const deleteGeneration = (id) => {
+  return async (dispatch) => {
+    await api.deleteGeneration(id)
+    dispatch(fetchGenerations());
   }
 }
   
@@ -41,8 +57,13 @@ export const generationsReducer = function (state = defaultState, action) {
       return {
         ...state,
         status: statusKeys[action.payload.status],
-        data: action.payload.data
+        generations: action.payload.generations
       };
+    case "SET_PARENT":
+      return {
+        ...state,
+        parent: action.payload
+      }
     default:
       return state;
   }

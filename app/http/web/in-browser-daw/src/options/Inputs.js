@@ -15,17 +15,60 @@ const mapDispatchToProps = dispatch => {
   }
 };
 
-const Dropdown = () => "drop"
-const Checkboxes = () => "drop"
+const Dropdown = ({option, currentOptions, onChange}) => {
+  let selections = option.options.map(item => <option key={item} value={item}>{item}</option> )
+  const [value, setValue] = React.useState(currentOptions.composer || option.default);
+
+  React.useEffect(() => onChange({toParam: option.toParam, value}), [value])
+
+  return (
+    <select
+      value={value}
+      onChange={(e) => setValue(e.target.value)}
+      className="MuseNetOption">
+      {selections}
+    </select>
+  );
+}
+
+const Checkbox = ({instrumentName, checkedDefault, toggleInstrument}) =>{
+  const [checked, setChecked] = React.useState(checkedDefault)
+  const handleChange = (e) => {
+    setChecked(e.target.checked);
+  }
+
+  React.useEffect(() => {
+    console.log("effect")
+    toggleInstrument({toParam: instrumentName, value: checked})
+  }, [checked])
+
+  return(
+    <>
+    {instrumentName}
+    <input
+      className="MuseNetOption"
+      type="checkbox"
+      value={instrumentName}
+      checked={checked}
+      onChange={handleChange}
+      />
+    </>
+  );
+}
+const Checkboxes = ({option, currentOptions, onChange}) => {
+  return option.options.map(opt => <Checkbox 
+                                        key={opt} 
+                                        instrumentName={opt} 
+                                        checkedDefault={Object.keys(currentOptions).includes(opt)} 
+                                        toggleInstrument={onChange}
+                                        />)
+}
 
 const SliderInput = ({option, onChange, currentOptions}) => {
-  console.log('currentOptions', currentOptions)
   const step_size = option.max < 3 ? .01 : 1;
   const [value, setValue] = React.useState(currentOptions[option.toParam] || option.default);
 
-  function handleChange(e){
-    setValue(e.target.value)
-  }
+  const handleChange = (e) => setValue(e.target.value);
 
   React.useEffect(() => {
     onChange({value, toParam: option.toParam})
@@ -34,7 +77,6 @@ const SliderInput = ({option, onChange, currentOptions}) => {
   return (
     <>
       <input
-        className="MuseNetOption"
         type="range"
         min={option.min}
         max={option.max}
@@ -52,11 +94,11 @@ export const InputSelectorComponent = ({data, options, handleToggle}) => {
   let selection
 
   if(choice === "select"){
-    selection =  <Dropdown data={data} onChange={handleToggle} />
+    selection =  <Dropdown    option={data} onChange={handleToggle} currentOptions={options} />
   } else if (choice === "slider"){
     selection =  <SliderInput option={data} onChange={handleToggle} currentOptions={options}/>
   } else if (choice === "checkboxinput"){
-    selection =  <Checkboxes data={data} onChange={handleToggle} />
+    selection =  <Checkboxes  option={data} onChange={handleToggle} currentOptions={options} />
   } else {
     selection =  "failed"
   }

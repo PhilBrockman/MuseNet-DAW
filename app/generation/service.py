@@ -32,18 +32,20 @@ class Service(object):
     return c.tracks
 
   def create_generation_for(self, options):
+    log.info(options)
     instrumentation = [x for x in musenetSettings().legal_instruments() if options[x]]
+    log.info(instrumentation)
     c = completion(project_root="user_id", enc=options["parent_enc"], composer=options["composer"],
                    temp=options["temp"], num_tokens=options["num_tokens"],
                    instrumentation=instrumentation)
     r = fetcher.fetch(c)
-    log.info(r.children)
+    newGens = []
     for child in r.children:
         save_location = child.save()
         child.test_save_loc = save_location
         child.save(save_location)
-        self.repo_client.create(self.prepare_generation(child, options))
-    return options
+        newGens.append(self.repo_client.create(self.prepare_generation(child, options)))
+    return [x.inserted_id for x in newGens]
 #
 #   def update_kudo_with(self, repo_id, githubRepo):
 #     records_affected = self.repo_client.update({'user_id': self.user_id, 'repo_id': repo_id}, self.prepare_kudo(githubRepo))
@@ -61,6 +63,7 @@ class Service(object):
     log.info("Preparing generations")
     res = {}
     res["completion_location"] = gen.last_save_location
+
     for inst in musenetSettings().legal_instruments():
         res[inst] = settings.instrumentation[inst]
 
@@ -70,5 +73,4 @@ class Service(object):
     for option in ["parent_id", "cutoff", "clip_length", "repeat_percentage"]:
         res[option] = options[option]
 
-    log.info(res)
     return res

@@ -3,6 +3,8 @@
 const defaultState = {
   temp: .7,
   num_tokens: 100,
+  piano: true,
+  strings: true,
 }
 
 export const optionReducer = function (state = defaultState, action) {

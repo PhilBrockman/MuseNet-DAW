@@ -1,32 +1,51 @@
 // import APIClient from './utilities/apiClient'
 import React from 'react'
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import {Loader} from "../utilities/Loader/Loader"
 import {statusKeys} from "../utilities/utilities"
+import {store} from "../reducers/rootReducer"
+import {deleteGeneration} from "../reducers/generationsReducer"
+
 
 const mapStateToProps = state => {
   return state;
 };
 
 const Generation = ({data}) => {
+  const dispatch = useDispatch()
+
   const item = data
   return <>
-        {item.composer} | {item["_id"]["$oid"]}
+        {item.composer} | 
+        {item["_id"]["$oid"]} 
+        <button onClick={() => dispatch({type: "SET_PARENT", payload: item})}>
+          parent
+          </button>
+        <button onClick={() => dispatch(deleteGeneration( item["_id"]["$oid"]))}>X</button>
         
       </>
 
 /* <MIDIer item={item} api={api}/>
 <button onClick={() => props.setParentData(item["_id"]["$oid"])}>parent</button>
-<button onClick={() => props.deleteGeneration(item["_id"]["$oid"])}>X</button>
+
 <button onClick={() => api.downloadMIDI(item)}>Download</button> */
 }
 
 export const GenerationsComponent = ({generations}) => {
+
+  React.useEffect(() => {
+    console.log("parent changed", generations.parent)
+  }, [generations.parent])
+
   if (generations.status === statusKeys.LOADING){
     return <Loader />
   }
-
-  return generations.data.map(generation => <Generation key={generation._id} data={generation}/>)
+  
+  console.log("idxk what's going on ", generations)
+  const mappedGenerations = generations.generations.map(generation => <Generation key={generation._id["$oid"]} data={generation}/>)
+  return <>
+  {mappedGenerations}
+  </>
 }
 export const Generations = connect(mapStateToProps)(GenerationsComponent);
 

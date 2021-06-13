@@ -8,7 +8,9 @@ class APIClient {
 
   createGeneration(data) {
     console.log("creating ", data)
-    return this.perform('post', '/generation', data);
+    const newGens =  this.perform('post', '/generation', data)
+    console.log('newGens', newGens)
+    return newGens;
   }
 
   deleteGeneration(id) {
@@ -24,8 +26,8 @@ class APIClient {
     return this.perform('get', `/generation/${id}`);
   }
 
-  createMediaForGeneration(item) {
-    return this.perform('get', `/generation/${item["_id"]["$oid"]}/generate_midi`)
+  createMediaForGeneration(id) {
+    return this.perform('get', `/generation/${id}/generate_midi`)
   }
 
   getTracks(id) {
@@ -60,4 +62,7 @@ class APIClient {
   }
 }
 
-export default APIClient;
+
+const api = new APIClient("some token")
+
+export default api;
