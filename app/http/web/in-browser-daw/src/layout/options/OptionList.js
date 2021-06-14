@@ -1,7 +1,7 @@
 import {options as MNOptions}  from "./MuseNetOptions"
 import {InputSelector} from "./Inputs"
 import { connect } from 'react-redux';
-import {store} from "../reducers/rootReducer"
+
 import {Typography, Container, Grid, Button} from "@material-ui/core/";
 // import "./OptionList.css"
 

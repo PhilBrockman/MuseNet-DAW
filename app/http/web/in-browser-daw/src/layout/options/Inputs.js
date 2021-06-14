@@ -1,7 +1,6 @@
 import React from 'react';
 import { connect, useSelector } from 'react-redux';
-import "./Input.css"
-import {store} from "../reducers/rootReducer"
+import {store} from "../../reducers/rootReducer"
 import {Typography, Button, Select, Checkbox, FormControlLabel, Grid, Slider} from "@material-ui/core";
 
 const mapStateToProps = state => {
@@ -44,9 +43,9 @@ const Dropdown = ({option, currentOptions, onChange}) => {
 
   return (<>
     <Select
+      native
       value={value}
-      onChange={(e) => setValue(e.target.value)}
-      className="MuseNetOption">
+      onChange={(e) => setValue(e.target.value)}>
       {selections}
     </Select>
     <ParentDiff attr="composer" comparison={value} resetValueCallback={setValue} />

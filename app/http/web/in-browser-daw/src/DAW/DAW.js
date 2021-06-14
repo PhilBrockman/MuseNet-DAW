@@ -3,90 +3,70 @@ import {keymaps} from "./keymaps"
 // import useKeyPress from "utilities/useKeyPress"
 import React from 'react'
 import { useSelector } from 'react-redux';
-import {store} from "../reducers/rootReducer"
+import {Settings} from "./Settings"
+import {TrackViewer} from "./TrackViewer"
+
 // import {Notes} from './Notes'
 // import {Score, autoScore} from "./Scorer"
 // import {reduceNotes} from "./utils"
+import {Typography, Container, Grid, Checkbox, FormControlLabel, TextField, InputAdornment} from '@material-ui/core';
+import { connect } from 'react-redux';
+import api from "../api/apiClient";
 
-const Settings=() => "setings"
-const TrackViewer = () => "tracks"
+const mapStateToProps = state => {
+  return state;
+};
 
-// const mapStateToProps = (state) => {
-//   return state
-// }
+const mapDispatchToProps = dispatch => {
+  return {
+    setTracks: (item) => dispatch({type: "SET_TRACKS", payload: item}),
+  }
+};
 
-export const DAW = ({ }) => {
+const fetchTracksById = async (id) => {
+  return await api.getTracks(id)
+}
+
+export const DAWComponent = ({DAW, setTracks}) => {
   const parent = useSelector(state => state.parent)?.parent
 
-  const [bpm, setBPM] = React.useState(120)
-  const [dawResolution, setDawResolution] = React.useState(40)
-  const [subdivision, setSubdivision] = React.useState(4)
-  const [allVisible, setAllVisible] = React.useState(false)
+  //update the tracks based on the parent
+  React.useEffect(() => {
+    console.log("parentChanged")
+    if(parent) {
+      fetchTracksById(parent._id["$oid"]).then(res => {
+        console.log('res.data', res.data)
+        setTracks(res.data)
+      })
+      
+    };
+  }, [parent])
+
+  const visibleTracks = DAW.tracks.filter(track => track.visible)
 
   if(parent){
-    return <>
-      <div className="grid-container">
-        <Settings />
-        <TrackViewer />
-      </div>
-    </>
+    return <Container>
+      <Grid>
+        <Grid item>
+          <Settings />
+        </Grid>
+        <Grid item>
+          <TrackViewer 
+              tracks={visibleTracks}
+              
+              />
+        </Grid>
+      </Grid>
+    </Container>
   } else {
     return "no parents"
   }
 }
 
+export const DAW = connect(mapStateToProps, mapDispatchToProps)(DAWComponent);
 
-// export const DAW = connect(mapStateToProps)(DAWComponent)
 
-// const Settings = (props) => {
-//   const adjust = (a, b) => parseInt((a + b)*100)/100;
-//   useKeyPress('h', () => props.setBPM(adjust(props.bpm, 5)));
-//   useKeyPress('t', () => props.setBPM(adjust(props.bpm, .5)));
-//   useKeyPress('n', () => props.setBPM(adjust(props.bpm, .05)));
-//   useKeyPress('m', () => props.setBPM(adjust(props.bpm, -5)));
-//   useKeyPress('w', () => props.setBPM(adjust(props.bpm, -.5)));
-//   useKeyPress('v', () => props.setBPM(adjust(props.bpm, -.05)));
 
-//   return <>
-//     <div> BPM: {props.bpm} </div>
-//     <div><input type="range" min={50} max={200} value={props.bpm} step={.05} onChange={(e) => props.setBPM(e.target.value)} /> </div>
-//     <div> Cell width: {props.dawResolution} </div>
-//     <div><input type="range" min={30} max={300} value={props.dawResolution} onChange={(e) => props.setDawResolution(e.target.value)} /></div>
-//     <div> Subdivision: {props.subdivision} </div>
-//     <div><input type="range" min={1} max={8} value={props.subdivision} onChange={(e) => props.setSubdivision(e.target.value)} /></div>
-//     <button onClick={() => props.setBPM(autoScore(props.tracks, props.subdivision).tempo.toFixed(2))}>Optimize Tempo</button>
-//     <div> Show all: <input type="checkbox" checked={props.allVisible} onChange={(e) => props.setAllVisible(!props.allVisible)} /></div>
-//   </>
-// }
-
-// const TrackViewer = (props) => {
-//   const [activeTrack, setActiveTrack] = React.useState(0);
-
-//   React.useEffect(() => {
-//     setActiveTrack(0)
-//   }, [props.parentData])
-
-//   let tracks = props.tracks.map((item, idx) => {
-//     return <div key={idx} onClick={() => setActiveTrack(idx)}>
-//         {item.instrument} | {item.notes.length}
-//         </div>//.notes.length
-//   })
-
-//   return <>
-//     <div className="mini-area">
-//       {tracks}
-//     </div>
-//     <div>
-//       <Score {...props}/>
-//     </div>
-//     <div className="active-area">
-//       <ActiveArea
-//         activeTrack={activeTrack}
-//         {...props}
-//         />
-//     </div>
-//   </>
-// }
 
 // const ActiveArea = (props) => {
 //   if(props.activeTrack === null || !props.tracks[props.activeTrack].notes || props.tracks[props.activeTrack].notes.length === 0) {return "Select a track"}

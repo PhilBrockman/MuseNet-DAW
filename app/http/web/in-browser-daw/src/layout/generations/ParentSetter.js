@@ -1,4 +1,6 @@
-import { connect, useDispatch } from 'react-redux';
+import {Button, IconButton} from "@material-ui/core"
+import { connect } from 'react-redux';
+
 const mapStateToProps = state => {
   return state;
 };
@@ -11,9 +13,9 @@ const mapDispatchToProps = dispatch => {
 
 const ParentSetterComponent = ({item, setParent}) => {
   return <>
-      <button className="mn__button" onClick={() => setParent(item)}>
-        parent
-      </button>
+      <Button onClick={() => setParent(item)}>
+        Base
+      </Button>
     </> 
 }
 

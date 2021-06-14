@@ -1,12 +1,19 @@
 // import APIClient from './utilities/apiClient'
 import React from 'react'
 import { connect, useDispatch } from 'react-redux';
-import {Loader} from "../utilities/Loader/Loader"
-import {statusKeys} from "../utilities/utilities"
-import {deleteGeneration, fetchGenerations} from "../reducers/generationsReducer"
+import {Loader} from "../../utilities/Loader/Loader"
+import {statusKeys} from "../../utilities/utilities"
+import {deleteGeneration, fetchGenerations} from "../../reducers/generationsReducer"
 import {ParentSetter} from "./ParentSetter"
+import {store} from "../../reducers/rootReducer"
+import {IconButton, Typography, List, ListItem, ListItemText, makeStyles} from "@material-ui/core"
+import { Delete } from '@material-ui/icons';
 
-fetchGenerations()
+const useStyles = makeStyles((theme) => ({
+  list: {
+  },
+}));
+store.dispatch(fetchGenerations())
 
 const mapStateToProps = state => {
   return state;
@@ -16,33 +23,36 @@ const Generation = ({data}) => {
   const dispatch = useDispatch()
 
   const item = data
-  return <div>
-          <div>
-          {item.composer} | 
-          {item["_id"]["$oid"]} 
-        </div>
-        <div>
-          <ParentSetter item={item} />
-          <button className="mn__button" onClick={() => dispatch(deleteGeneration( item["_id"]["$oid"]))}>X</button>
-        </div>
-        
-      </div>
+  return <ListItem>
+              <ParentSetter item={item} />
+              <ListItemText primary={item.composer}/>
+              <IconButton className="mn__button" onClick={() => dispatch(deleteGeneration( item["_id"]["$oid"]))}><Delete /></IconButton>
+          </ListItem>
+
 
 /* <MIDIer item={item} api={api}/>
-<button onClick={() => props.setParentData(item["_id"]["$oid"])}>parent</button>
 
 <button onClick={() => api.downloadMIDI(item)}>Download</button> */
 }
 
+
 export const GenerationsComponent = ({generations}) => {
+  const classes = useStyles();
+  const [value, setValue] = React.useState(0);
+
   if (generations.status === statusKeys.LOADING){
     return <Loader />
   }
-  
+
   console.log("idxk what's going on ", generations)
   const mappedGenerations = generations.generations.map(generation => <Generation key={generation._id["$oid"]} data={generation}/>)
   return <>
-  {mappedGenerations}
+  <List subheader={<li />} className={classes.list}>
+    <li>Generations:</li>
+    <ul>
+      {mappedGenerations}
+    </ul>
+  </List>
   </>
 }
 export const Generations = connect(mapStateToProps)(GenerationsComponent);

@@ -2,21 +2,18 @@ import React from 'react'
 import { Provider } from 'react-redux';
 import {ControlPanel} from "./layout/ControlPanel"
 import {store} from "./reducers/rootReducer"
-import {fetchGenerations} from "./reducers/generationsReducer"
+
 import {DAW} from "./DAW/DAW"
 
 import { ThemeProvider } from '@material-ui/core'
-import Brightness3Icon from "@material-ui/icons/Brightness3";
-import Brightness7Icon from "@material-ui/icons/Brightness7";
 import Paper from "@material-ui/core/Paper";
-import IconButton from "@material-ui/core/IconButton";
 import { createMuiTheme, makeStyles } from "@material-ui/core/styles";
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import {CssBaseline, AppBar, Toolbar, Typography, Container, Grid} from '@material-ui/core';
 
 
 
-store.dispatch(fetchGenerations())
+
 
 const MuseNetFetcher = () => "Fetcher"
 
