@@ -3,9 +3,10 @@ import React from 'react'
 import { connect, useDispatch } from 'react-redux';
 import {Loader} from "../utilities/Loader/Loader"
 import {statusKeys} from "../utilities/utilities"
-import {deleteGeneration} from "../reducers/generationsReducer"
+import {deleteGeneration, fetchGenerations} from "../reducers/generationsReducer"
 import {ParentSetter} from "./ParentSetter"
 
+fetchGenerations()
 
 const mapStateToProps = state => {
   return state;

@@ -2,7 +2,7 @@ import React from 'react';
 import { connect, useSelector } from 'react-redux';
 import "./Input.css"
 import {store} from "../reducers/rootReducer"
-import Typography from "@material-ui/core/Typography";
+import {Typography, Button, Select, Checkbox, FormControlLabel, Grid, Slider} from "@material-ui/core";
 
 const mapStateToProps = state => {
   return state;
@@ -30,9 +30,9 @@ const ParentDiff = ({attr, comparison, resetValueCallback}) => {
   }
   if(!parent) return null;
   console.log('parent[attr]', typeof comparison, typeof parent[attr])
-  return <div className="parent-value">
+  return <div>
     <Typography>{convert(parent[attr])}</Typography>
-    <button className="mn__button" onClick={() => resetValueCallback(parent[attr])}>Reset</button>
+    <Button  onClick={() => resetValueCallback(parent[attr])}>Reset</Button>
   </div>
 }
 
@@ -43,18 +43,18 @@ const Dropdown = ({option, currentOptions, onChange}) => {
   React.useEffect(() => onChange({toParam: option.toParam, value}), [value])
 
   return (<>
-    <select
+    <Select
       value={value}
       onChange={(e) => setValue(e.target.value)}
       className="MuseNetOption">
       {selections}
-    </select>
+    </Select>
     <ParentDiff attr="composer" comparison={value} resetValueCallback={setValue} />
     </>
   );
 }
 
-const Checkbox = ({instrumentName, checkedDefault, toggleInstrument}) =>{
+const InstrumentCheckbox = ({instrumentName, checkedDefault, toggleInstrument}) =>{
   const [checked, setChecked] = React.useState(checkedDefault)
   const handleChange = (e) => {
     setChecked(!checked);
@@ -66,26 +66,31 @@ const Checkbox = ({instrumentName, checkedDefault, toggleInstrument}) =>{
   }, [checked])
 
   return(
-    <div className="checkbox-selector">
-    <div onClick={handleChange}>{instrumentName}</div>
-    <input
-      className="MuseNetOption"
-      type="checkbox"
-      value={instrumentName}
-      checked={checked}
-      onChange={handleChange}
+    <Grid item>
+      <FormControlLabel
+        control={<Checkbox
+          value={instrumentName}
+          checked={checked}
+          onChange={handleChange}
+          />}
+        label={instrumentName}
       />
+    
       <ParentDiff attr={instrumentName} comparison={checked} resetValueCallback={setChecked} />
-    </div>
+    </Grid>
   );
 }
 const Checkboxes = ({option, currentOptions, onChange}) => {
-  return option.options.map(opt => <Checkbox 
-                                        key={opt} 
-                                        instrumentName={opt} 
-                                        checkedDefault={Object.keys(currentOptions).includes(opt)} 
-                                        toggleInstrument={onChange}
-                                        />)
+  const boxes = option.options.map(opt => <InstrumentCheckbox 
+                                              key={opt} 
+                                              instrumentName={opt} 
+                                              checkedDefault={Object.keys(currentOptions).includes(opt)} 
+                                              toggleInstrument={onChange}
+    />)
+
+  return <Grid container >
+          {boxes}
+        </Grid>
 }
 
 const SliderInput = ({option, onChange, currentOptions}) => {
@@ -99,17 +104,16 @@ const SliderInput = ({option, onChange, currentOptions}) => {
   }, [value])
 
   return (
-    <div>
-      <input
-        type="range"
+    <Grid item>
+      <Slider
         min={option.min}
         max={option.max}
-        value={value}
+        defaultValue={value}
         step={step_size}
-        onChange={handleChange}/>
-      {value}
+        onChange={handleChange}
+        valueLabelDisplay="auto"/>
     <ParentDiff attr={option.toParam} comparison={value} resetValueCallback={setValue} />
-    </div>
+    </Grid>
   );
 }
 
@@ -128,10 +132,10 @@ export const InputSelectorComponent = ({data, options, handleToggle}) => {
     selection =  "failed"
   }
 
-  return <>
-    <div>{data.title}</div>
+  return <Grid item>
+    <Typography variant="h6">{data.title}</Typography>
     {selection}
-  </>
+  </Grid>
 }
 
 export const InputSelector = connect(mapStateToProps, mapDispatchToProps)(InputSelectorComponent);

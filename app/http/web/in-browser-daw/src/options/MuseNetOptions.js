@@ -1,5 +1,5 @@
 export const options = [{
-  title: 'Vanilla MuseNet',
+  title: 'Settings',
   icon: { name: 'subject' },
   children: [{
       title: "Composer",
@@ -41,12 +41,6 @@ export const options = [{
       info_title: "MuseNet will attempt to generate a song with the checked instruments.",
       info_body: "",
     },
-  ]
-},
-{
-  title: "Shape & Form",
-  icon: { name: "playlist_add" },
-  children: [
     {
       title: "Temperature",
       interactive: true,
