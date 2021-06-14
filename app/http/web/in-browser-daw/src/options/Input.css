@@ -1,0 +1,10 @@
+.checkbox-selector {
+  display: flex;
+  flex-direction: row;
+}
+
+.parent-value {
+  background-color: rgba(244, 30, 30, .4);
+  display: flex;
+  flex-direction: row;
+}

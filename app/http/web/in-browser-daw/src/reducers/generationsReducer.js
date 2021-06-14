@@ -4,7 +4,6 @@ import {statusKeys} from "../utilities/utilities"
 const defaultState = {
   status: "idle",
   generations: [],
-  parent: null,
 }
 
 const changeFetchStatus = status => {
@@ -47,6 +46,7 @@ export const deleteGeneration = (id) => {
 }
   
 export const generationsReducer = function (state = defaultState, action) {
+  console.log("generations reducer", action.type)
   switch (action.type) {
     case "STATUS_CHANGE":
       return {
@@ -59,11 +59,6 @@ export const generationsReducer = function (state = defaultState, action) {
         status: statusKeys[action.payload.status],
         generations: action.payload.generations
       };
-    case "SET_PARENT":
-      return {
-        ...state,
-        parent: action.payload
-      }
     default:
       return state;
   }

@@ -70,7 +70,7 @@ class Service(object):
     for option in ['num_tokens', 'composer', 'temp', 'enc']:
         res[option] = settings.__dict__[option]
 
-    for option in ["parent_id", "cutoff", "clip_length", "repeat_percentage"]:
+    for option in ["parent_id"]:
         res[option] = options[option]
 
     return res

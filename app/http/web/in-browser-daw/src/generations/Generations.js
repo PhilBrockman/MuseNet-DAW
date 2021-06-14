@@ -3,8 +3,8 @@ import React from 'react'
 import { connect, useDispatch } from 'react-redux';
 import {Loader} from "../utilities/Loader/Loader"
 import {statusKeys} from "../utilities/utilities"
-import {store} from "../reducers/rootReducer"
 import {deleteGeneration} from "../reducers/generationsReducer"
+import {ParentSetter} from "./ParentSetter"
 
 
 const mapStateToProps = state => {
@@ -15,15 +15,17 @@ const Generation = ({data}) => {
   const dispatch = useDispatch()
 
   const item = data
-  return <>
-        {item.composer} | 
-        {item["_id"]["$oid"]} 
-        <button onClick={() => dispatch({type: "SET_PARENT", payload: item})}>
-          parent
-          </button>
-        <button onClick={() => dispatch(deleteGeneration( item["_id"]["$oid"]))}>X</button>
+  return <div>
+          <div>
+          {item.composer} | 
+          {item["_id"]["$oid"]} 
+        </div>
+        <div>
+          <ParentSetter item={item} />
+          <button className="mn__button" onClick={() => dispatch(deleteGeneration( item["_id"]["$oid"]))}>X</button>
+        </div>
         
-      </>
+      </div>
 
 /* <MIDIer item={item} api={api}/>
 <button onClick={() => props.setParentData(item["_id"]["$oid"])}>parent</button>
@@ -32,11 +34,6 @@ const Generation = ({data}) => {
 }
 
 export const GenerationsComponent = ({generations}) => {
-
-  React.useEffect(() => {
-    console.log("parent changed", generations.parent)
-  }, [generations.parent])
-
   if (generations.status === statusKeys.LOADING){
     return <Loader />
   }

@@ -3,6 +3,7 @@ import {InputSelector} from "./Inputs"
 import { connect } from 'react-redux';
 import {store} from "../reducers/rootReducer"
 import {createGeneration} from "../reducers/generationsReducer"
+import Typography from "@material-ui/core/Typography";
 import "./OptionList.css"
 
 const mapStateToProps = state => {
@@ -13,17 +14,18 @@ const Section = ({items}) => {
   const detail = items.children.map((item ,id) => <InputSelector key={id} data={item} />)
 
   return <fieldset>
-    <legend>{items.title}</legend>
+    <Typography>{items.title}</Typography>
     {detail}
     </fieldset>
 }
 
-const OptionListComponent = ({options, handleDecrementClick, handleIncrementClick}) => {
+const OptionListComponent = () => {
+  console.log("redrwing options")
   return (
     <fieldset>
-      <legend>Options</legend>
-      <button onClick={() => store.dispatch(createGeneration(createGenerationProps()))}>create</button>
+      <Typography>Options</Typography>
       <div className="optionlist-item">
+        <button className="mn__button" onClick={() => store.dispatch(createGeneration(createGenerationProps()))}>create</button>
         {MNOptions.map((section, id) => <Section key={id} items={section} />)}
       </div>
     </fieldset>
@@ -33,7 +35,7 @@ const OptionListComponent = ({options, handleDecrementClick, handleIncrementClic
 
 const createGenerationProps = () => {
   const opts = store.getState().options
-  const parent = store.getState().generations.parent
+  const parent = store.getState().parent.parent
   const out = {
     ...opts,
     parent_enc: parent ? parent.enc : "",
