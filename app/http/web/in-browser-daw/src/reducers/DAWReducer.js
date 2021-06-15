@@ -3,8 +3,9 @@
 const defaultState = {
   tracks: [],
   visibleTracks: [],
-  bpm: 0,
-  subDivisions: 0,
+  bpm: 120,
+  subDivisions: 4,
+  dawResolution: 40,
 }
 
 export const DAWReducer = function (state = defaultState, action) {

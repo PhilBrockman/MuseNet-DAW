@@ -1,10 +1,14 @@
 // import "./daw.css"
 import {keymaps} from "./keymaps"
+import {Notes} from "./Notes"
 // import useKeyPress from "utilities/useKeyPress"
 import React from 'react'
 import { useSelector } from 'react-redux';
 import {Settings} from "./Settings"
 import {TrackViewer} from "./TrackViewer"
+import {reduceNotes} from "../utilities/utilities"
+import "./daw.css"
+import Draggable from 'react-draggable'; // The default
 
 // import {Notes} from './Notes'
 // import {Score, autoScore} from "./Scorer"
@@ -51,9 +55,9 @@ export const DAWComponent = ({DAW, setTracks}) => {
           <Settings />
         </Grid>
         <Grid item>
-          <TrackViewer 
+          <WorkArea 
               tracks={visibleTracks}
-              
+              bpm={DAW.bpm}
               />
         </Grid>
       </Grid>
@@ -63,9 +67,91 @@ export const DAWComponent = ({DAW, setTracks}) => {
   }
 }
 
+const DAWBackground = ({notes, bpm, children}) => {
+  let minNote = notes.reduce((min, b) => Math.min(min, b.pitch), 10000);
+  let maxNote = notes.reduce((min, b) => Math.max(min, b.pitch), 0);
+  let filteredKeys = Object.keys(keymaps)//.filter((item) => (item >= minNote && item <= maxNote))
+  let totalLengthInSeconds = Math.ceil(Math.max.apply(Math, notes.map(function(o) { return o.time_on+o.duration; })))
+  let numBeats = Math.ceil(totalLengthInSeconds*bpm/60);
+  let boxes = Array.from(Array(numBeats).keys())
+
+  let pianoKeys = filteredKeys.map((item, idx) => {
+    let c = keymaps[item].includes("#") ? "accidental" : "natural";
+    return <div className={[c, "keyNote"].join(" ")} key={idx}>{keymaps[item]}</div>
+  }).reverse()
+
+  let header = <div className="key-row">
+                    <div className="daw-cell"></div>
+                    {boxes.map((item, idx) => {
+                      return <div className="daw-cell" key={idx}>{idx}</div>
+                    })}
+                </div>
+
+  let body = filteredKeys.map((item, idx) => {
+    let b = boxes.map((item, idx) => {
+      return <div
+              className={["background-cell", "daw-cell"].join(" ")}
+              key={"beats"+idx}></div>
+    })
+    return <div className="key-row" key={idx}>
+      <div className="accidental keyNote">
+        {pianoKeys[idx]}
+      </div>
+      {b}
+    </div>
+  })
+  return <>
+    <div >
+      {header}
+      <div>
+        {body}
+      </div>
+    </div>
+  </>
+}
+
+const WorkArea = ({tracks, bpm}) => {
+  const notePool = reduceNotes(tracks)
+  const dawResolution = useSelector(state => state.DAW.dawResolution)
+  const [playheadPixels, setPlayheadPixels] = React.useState(dawResolution)
+
+  if(notePool.length === 0) return "Select some tracks to get started";
+
+  return <>
+      <div className="daw">
+        <DAWBackground notes={notePool} bpm={bpm} />
+        <Notes tracks={tracks} bpm={bpm} />
+        <Playhead 
+            setPosition={setPlayheadPixels}
+            initialOffset={dawResolution}
+            />
+      </div>
+  </>
+}
+
+export const ItemTypes = {
+  PLAYHEAD: 'playhead'
+}
+
+const Playhead = ({ setPosition, initialOffset}) => {
+  const nodeRef = React.useRef(null);
+  const style = { cursor: "move" }
+  const handleDrag = (e, data) => setPosition(data.lastX)
+
+  return <Draggable 
+            axis="x"
+            nodeRef={nodeRef}
+            onDrag={handleDrag}
+            defaultPosition={{x: initialOffset, y: 0}}
+            >
+            <div className="playhead" 
+              style={style}
+              ref={nodeRef}
+              />
+          </Draggable>
+}
+
 export const DAW = connect(mapStateToProps, mapDispatchToProps)(DAWComponent);
-
-
 
 
 // const ActiveArea = (props) => {

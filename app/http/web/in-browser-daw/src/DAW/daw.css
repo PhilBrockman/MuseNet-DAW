@@ -1,0 +1,51 @@
+
+.daw {
+  overflow:scroll;
+  width:700px;
+  position: relative;
+}
+
+.daw-cell, .keyNote {
+  width:40px;
+  height:30px;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.daw-cell {
+  border-left: 2px solid rgba(0, 0, 255, .4);
+  border-bottom: 1px solid green;
+} /*aeu  eu*/
+
+.natural {
+  background-color:white;
+  color:black;
+
+}
+.accidental {
+  background-color: black;
+  color:white;
+}
+
+.background-cell {
+  background-color: rgba(50,50,50,.3);
+}
+
+.key-row {
+  display: flex;
+  flex-direction: row;
+}
+
+.note {
+  z-index: 2;
+  position: absolute;
+  /* background-color: blue; */
+}
+
+.playhead {
+  width: 4px;
+  background-color: black;
+  position: absolute;
+  top: 0px;
+  height: 100%;
+}
