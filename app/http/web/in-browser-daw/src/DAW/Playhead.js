@@ -14,7 +14,7 @@ const mapDispatchToProps = dispatch => {
 
 const PlayheadComponent = ({ setPosition, initialOffset, reposition}) => {
   const nodeRef = React.useRef(null);
-  const style = { cursor: "ew-resize" }
+  const style = { cursor: "ew-resize", zIndex: "3"}
   const handleDrag = (e, data) => setPosition(data.lastX)
 
   const playhead = <Draggable 

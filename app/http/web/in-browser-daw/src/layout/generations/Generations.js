@@ -24,11 +24,6 @@ const Generation = ({data}) => {
               <ListItemText primary={item.composer}/>
               <IconButton className="mn__button" onClick={() => dispatch(deleteGeneration( item["_id"]["$oid"]))}><Delete /></IconButton>
           </ListItem>
-
-
-/* <MIDIer item={item} api={api}/>
-
-<button onClick={() => api.downloadMIDI(item)}>Download</button> */
 }
 
 
@@ -37,7 +32,6 @@ export const GenerationsComponent = ({generations}) => {
     return <Loader />
   }
 
-  console.log("idxk what's going on ", generations)
   const mappedGenerations = generations.generations.map(generation => <Generation key={generation._id["$oid"]} data={generation}/>)
   return <>
   <List subheader={<li />}>
@@ -49,56 +43,3 @@ export const GenerationsComponent = ({generations}) => {
   </>
 }
 export const Generations = connect(mapStateToProps)(GenerationsComponent);
-
-
-  // const fetchData = async () => {
-  //   const result = await api.generations();
-  //   setGenerations(result.data);
-  // }
-
-  // const deleteGeneration = (id) => {
-  //   api.deleteGeneration(id).then(r => {
-  //     fetchData();
-  //   })
-  // }
-
-  // const createGeneration = () => {
-  //   const prepSelections = () => {
-  //     const selectedOptions = document.querySelectorAll(".MuseNetOption");
-  //     const updatedSettings = {}
-  //     selectedOptions.forEach(item => {
-  //       updatedSettings[item.id] = item.type==="checkbox"
-  //                                     ? item.checked
-  //                                     : item.value
-  //     })
-  //     updatedSettings.parent_enc = document.getElementById("parentEnc").value
-  //     updatedSettings.parent_id = document.getElementById("parentId").value
-  //     return updatedSettings;
-  //   }
-
-  //   api.createGeneration(prepSelections()).then(r => {
-  //     fetchData()
-  //   });
-  // }
-
-  // return (
-  //   <div className="App">
-  //     <div>
-  //       <Generations
-  //         generations={generations}
-  //         deleteGeneration={deleteGeneration}
-  //         setParentData={fetchParentData}
-  //         />
-  //     </div>
-  //     <SongEditor
-  //       tracks={tracks}
-  //       setTracks={setTracks}
-  //       parentData={parentData}
-  //       />
-  //     <OptionList
-  //       createGeneration={createGeneration}
-  //       parent={parentData}
-  //       />
-  //   </div>
-  // );
-
