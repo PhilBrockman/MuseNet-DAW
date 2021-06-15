@@ -1,6 +1,6 @@
-import {store} from "../../reducers/rootReducer"
+import {store} from "../../rootReducer"
 import {Button, IconButton} from "@material-ui/core"
-import {createGeneration} from "../../reducers/generationsReducer"
+import {createGeneration} from "./generationsReducer"
 // import DeleteIcon from '@material-ui/icons/Delete'
 import { Delete } from '@material-ui/icons';
 

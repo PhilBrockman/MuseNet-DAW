@@ -26,6 +26,23 @@ export const Notes = ({tracks, bpm}) => {
   return <>{allNotes}</>
 }
 
+// const InefficientNote = ({note, bpm, color, dawResolution, unitCellHeight, DAWcellStyle} ) => {
+
+//   let cellWidth=(bpm*note.duration)/60*dawResolution;
+//   let topOffset=unitCellHeight*(127-note.pitch);
+//   let leftOffset=(1+bpm*(note.time_on)/60)*dawResolution;
+
+//   let style = Object.assign({
+//     height:`${unitCellHeight}px`,
+//     width:`${cellWidth}px`,
+//     top:`${topOffset}px`,
+//     left:`${leftOffset}px`,
+//     backgroundColor: color,
+//   }, DAWcellStyle)
+
+//   return <div className="note" style={style}></div>
+// }
+
 class Note extends PureComponent{
   constructor (props){
     super(props)
