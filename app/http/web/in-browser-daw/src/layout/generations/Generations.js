@@ -9,10 +9,6 @@ import {store} from "../../reducers/rootReducer"
 import {IconButton, Typography, List, ListItem, ListItemText, makeStyles} from "@material-ui/core"
 import { Delete } from '@material-ui/icons';
 
-const useStyles = makeStyles((theme) => ({
-  list: {
-  },
-}));
 store.dispatch(fetchGenerations())
 
 const mapStateToProps = state => {
@@ -37,9 +33,6 @@ const Generation = ({data}) => {
 
 
 export const GenerationsComponent = ({generations}) => {
-  const classes = useStyles();
-  const [value, setValue] = React.useState(0);
-
   if (generations.status === statusKeys.LOADING){
     return <Loader />
   }
@@ -47,7 +40,7 @@ export const GenerationsComponent = ({generations}) => {
   console.log("idxk what's going on ", generations)
   const mappedGenerations = generations.generations.map(generation => <Generation key={generation._id["$oid"]} data={generation}/>)
   return <>
-  <List subheader={<li />} className={classes.list}>
+  <List subheader={<li />}>
     <li>Generations:</li>
     <ul>
       {mappedGenerations}
