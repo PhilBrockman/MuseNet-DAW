@@ -2,12 +2,10 @@
 
 const defaultState = {
   tracks: [],
-  visibleTracks: [],
   bpm: 120,
   subDivisions: 4,
-  DAWcell: {
+  unitCell: {
     style: {
-      minWidth:"45px",
       width: "45px",
       height:"30px",
     }
@@ -39,6 +37,32 @@ export const DAWReducer = function (state = defaultState, action) {
       return {
         ...state,
         tracks: newTracks
+      }
+    case "CHANGE_NOTE":
+      const newNoteInTrack = state.tracks.map((track, trackId) => {
+        if(trackId === action.payload.trackId){
+          const newNotes = track.notes.map((note, noteId) => {
+            if(noteId === action.payload.noteId){
+              console.log("old note", note)
+              console.log('setting newNote', action.payload.newNote)
+              console.log({trackId, noteId})
+              return action.payload.newNote
+            } else {
+              return note
+            }
+          })
+          return {
+            ...track,
+            notes: newNotes
+          }
+        } else {
+          return track
+        }
+      })
+      console.log("updated note:", newNoteInTrack[0].notes[37])
+      return {
+        ...state,
+        tracks: newNoteInTrack,
       }
     default:
       return state;

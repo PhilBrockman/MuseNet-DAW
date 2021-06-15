@@ -65,7 +65,7 @@ export const DAWComponent = ({DAW, setTracks}) => {
 }
 
 const DAWcell = ({content, additonalClasses}) => {
-  const DAWcellStyle = useSelector(state => state.DAW.DAWcell.style)
+  const DAWcellStyle = useSelector(state => state.DAW.unitCell.style)
   let allClasses = ["daw-cell"];
   if(additonalClasses?.length > 0){
     allClasses = [...allClasses, ...additonalClasses]
@@ -131,7 +131,7 @@ class DAWBackground extends PureComponent {
 
 const WorkArea = ({tracks, bpm}) => {
   const notePool = reduceNotes(tracks)
-  const dawResolution = parseInt(useSelector(state => state.DAW.DAWcell.style.width))
+  const unitCellWidth = parseInt(useSelector(state => state.DAW.unitCell.style.width))
   const midi= tracksToJSON(tracks)
 
   if(notePool.length === 0) return "Select some tracks to get started";
@@ -144,9 +144,9 @@ const WorkArea = ({tracks, bpm}) => {
   {/* <button onClick={() => playMidi(midi)}>Will this play anthynig???</button> */}
       <div className="daw">
         <DAWBackground notes={notePool} bpm={bpm} />
-        <Notes tracks={tracks} bpm={bpm} />
+        <Notes bpm={bpm} />
         <Playhead 
-            initialOffset={dawResolution}
+            initialOffset={unitCellWidth}
             reposition={reposition}
             />
       </div>
