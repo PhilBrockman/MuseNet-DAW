@@ -31,11 +31,6 @@
   flex-direction: row;
 }
 
-.note {
-  z-index: 2;
-  position: absolute;
-  /* background-color: blue; */
-}
 
 .playhead {
   width: 4px;

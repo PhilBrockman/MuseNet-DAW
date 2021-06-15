@@ -2,7 +2,7 @@ import {options as MNOptions}  from "./MuseNetOptions"
 import {InputSelector} from "./Inputs"
 import { connect } from 'react-redux';
 
-import {Typography, Container, Grid, Button} from "@material-ui/core/";
+import {Typography, Grid} from "@material-ui/core/";
 // import "./OptionList.css"
 
 const mapStateToProps = state => {

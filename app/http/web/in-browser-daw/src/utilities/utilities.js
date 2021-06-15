@@ -11,14 +11,19 @@ export const reduceNotes = (data) =>
     return acc;
   }, []);
 
-  export const playheadToSeconds = (ph, bpm, dawRes) => {
-    //normalize playhead
-    const normalizedPixels = ph - dawRes;
+  export const pixelsToSeconds = (pixels, bpm, dawRes) => {
     //conert to measures
-    const beats = normalizedPixels/dawRes;
+    const beats = pixels/dawRes;
     //convert measures to seconds
     const secs = beats / bpm * 60 
     return secs 
+
+  }
+
+  export const playheadToSeconds = (ph, bpm, dawRes) => {
+    //normalize playhead
+    const normalizedPixels = ph - dawRes;
+    return pixelsToSeconds(normalizedPixels, bpm, dawRes)
   }
 
   export const secondsToPlayhead = (seconds, bpm, dawRes) => {

@@ -6,7 +6,7 @@ import {statusKeys} from "../../utilities/utilities"
 import {deleteGeneration, fetchGenerations} from "./generationsReducer"
 import {ParentSetter} from "./ParentSetter"
 import {store} from "../../rootReducer"
-import {IconButton, Typography, List, ListItem, ListItemText, makeStyles} from "@material-ui/core"
+import {IconButton, List, ListItem, ListItemText} from "@material-ui/core"
 import { Delete } from '@material-ui/icons';
 
 store.dispatch(fetchGenerations())

@@ -7,9 +7,9 @@ import {DAW} from "./DAW/DAW"
 
 import { ThemeProvider } from '@material-ui/core'
 import Paper from "@material-ui/core/Paper";
-import { createMuiTheme, makeStyles } from "@material-ui/core/styles";
+import { createMuiTheme } from "@material-ui/core/styles";
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-import {CssBaseline, AppBar, Toolbar, Typography, Container, Grid} from '@material-ui/core';
+import {CssBaseline, AppBar, Toolbar, Typography} from '@material-ui/core';
 
 
 

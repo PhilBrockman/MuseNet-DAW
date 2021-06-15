@@ -1,5 +1,5 @@
 import React from 'react';
-import {Typography, Container, Grid, Checkbox, FormControlLabel, TextField, InputAdornment} from '@material-ui/core';
+import { Grid, Checkbox, FormControlLabel, TextField, InputAdornment} from '@material-ui/core';
 import { connect } from 'react-redux';
 
 const mapStateToProps = state => {
@@ -15,7 +15,7 @@ const mapDispatchToProps = dispatch => {
 
 const SetBPM = ({initialBPM, setBPM }) => {
   const [value, setValue] = React.useState(initialBPM)
-  React.useEffect(() => {setBPM(parseInt(value))}, [value])
+  React.useEffect(() => {setBPM(parseInt(value))}, [value, setBPM])
   return <TextField
             size="small"
              value={value}

@@ -1,4 +1,4 @@
-import {CssBaseline, AppBar, Toolbar, Typography, Container, Grid, Box} from '@material-ui/core';
+import {Container, Grid} from '@material-ui/core';
 import { CreateGenerationButton } from './generations/CreateGenerationButton';
 import {OptionList} from "./options/OptionList"
 import {Generations} from "./generations/Generations"

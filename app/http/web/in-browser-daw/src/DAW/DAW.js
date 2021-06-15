@@ -1,7 +1,7 @@
 
 import React, { PureComponent } from 'react'
 import { useSelector, connect } from 'react-redux';
-import {Typography, Container, Grid, Checkbox, FormControlLabel, TextField, InputAdornment} from '@material-ui/core';
+import {Container, Grid} from '@material-ui/core';
 import {keymaps} from "../utilities/keymaps"
 import {Notes} from "./Notes"
 import {Settings} from "./Settings"
@@ -11,7 +11,7 @@ import {selectParent} from "../layout/generations/parentReducer"
 import api from "../api/apiClient";
 import "./daw.css"
 
-import {tracksToJSON, playMidi} from "../utilities/MIDIfier"
+// import {tracksToJSON, playMidi} from "../utilities/MIDIfier"
 
 
 const mapStateToProps = state => {
@@ -41,7 +41,7 @@ export const DAWComponent = ({DAW, setTracks}) => {
       })
       
     };
-  }, [parentId])
+  }, [parentId, setTracks])
 
   const visibleTracks = DAW.tracks.filter(track => track.visible)
 
@@ -79,8 +79,8 @@ class DAWBackground extends PureComponent {
     super(props)
     const {notes, bpm} = props
 
-    let minNote = notes.reduce((min, b) => Math.min(min, b.pitch), 10000);
-    let maxNote = notes.reduce((min, b) => Math.max(min, b.pitch), 0);
+    // let minNote = notes.reduce((min, b) => Math.min(min, b.pitch), 10000);
+    // let maxNote = notes.reduce((min, b) => Math.max(min, b.pitch), 0);
     let filteredKeys = Object.keys(keymaps)//.filter((item) => (item >= minNote && item <= maxNote))
     let totalLengthInSeconds = Math.ceil(Math.max.apply(Math, notes.map(function(o) { return o.time_on+o.duration; })))
     let numBeats = Math.ceil(totalLengthInSeconds*bpm/60);
@@ -132,7 +132,7 @@ class DAWBackground extends PureComponent {
 const WorkArea = ({tracks, bpm}) => {
   const notePool = reduceNotes(tracks)
   const unitCellWidth = parseInt(useSelector(state => state.DAW.unitCell.style.width))
-  const midi= tracksToJSON(tracks)
+  // const midi= tracksToJSON(tracks)
 
   if(notePool.length === 0) return "Select some tracks to get started";
 

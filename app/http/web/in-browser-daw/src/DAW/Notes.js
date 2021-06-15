@@ -1,6 +1,8 @@
 import React, { PureComponent } from 'react';
-import {useSelector} from "react-redux"
-import { connect } from 'react-redux';
+import {useSelector, connect} from "react-redux"
+import Draggable from 'react-draggable'
+import {pixelsToSeconds} from "../utilities/utilities"
+import "./Notes.css"
 
 let COLORS = ["red", "blue", "green"]
 
@@ -28,28 +30,29 @@ export const NotesComponent = ({bpm, changeNote}) => {
     changeNote({
       trackId: trackIndex,
       noteId: noteIndex,
-      newNote: {
-        ...note,
-        duration: 30
-      }
+      newNote: note
     })
+    console.log("endedup changeing the note")
   }
+
+  
 
   const InteractiveNote = ({note, trackIndex, noteIndex}) => {
     return <div key={trackIndex+"-"+noteIndex}>
-              <div onClick={() => updateNote(trackIndex, noteIndex, note)}>
-                <Note
-                  note={note} 
-                  timeOn={note.time_on}
-                  pitch={note.pitch}
-                  duration={note.duration}
-                  bpm={bpm}
-                  unitCellWidth={unitCellWidth}
-                  unitCellHeight={unitCellHeight}
-                  color={COLORS[trackIndex]}
-                  />
-                </div>
-              </div>
+              <Note
+                note={note} 
+                timeOn={note.time_on}
+                pitch={note.pitch}
+                duration={note.duration}
+                bpm={bpm}
+                unitCellWidth={unitCellWidth}
+                unitCellHeight={unitCellHeight}
+                color={COLORS[trackIndex]}
+                noteIndex={noteIndex}
+                trackIndex={trackIndex}
+                updateNote={updateNote}
+                />
+            </div>
   }
 
   const TrackNotes = ({notes, trackIndex}) => notes.map((note, noteIndex) => <InteractiveNote key={noteIndex} note={note} trackIndex={trackIndex} noteIndex={noteIndex} />)
@@ -60,45 +63,97 @@ export const NotesComponent = ({bpm, changeNote}) => {
 
 export const Notes = connect(mapStateToProps, mapDispatchToProps)(NotesComponent);
 
-// const InefficientNote = ({note, noteId, bpm, color, unitCellWidth, unitCellHeight, DAWcellStyle} ) => {
-//   let cellWidth=(bpm*note.duration)/60*unitCellWidth;
-//   let topOffset=unitCellHeight*(127-note.pitch);
-//   let leftOffset=(1+bpm*(note.time_on)/60)*unitCellWidth;
 
-//   let style = {
-//     height:`${unitCellHeight}px`,
-//     width:`${cellWidth}px`,
-//     top:`${topOffset}px`,
-//     left:`${leftOffset}px`,
-//     backgroundColor: color,
-//   }
+const notePosition = (timeOn, duration, bpm, pitch, unitCellWidth, unitCellHeight) => {
+  let cellWidth=(bpm*duration)/60*unitCellWidth;
+  let topOffset=unitCellHeight*(127-pitch);
+  let leftOffset=(1+bpm*(timeOn)/60)*unitCellWidth;
 
-//   return <div className="note" style={style}>{noteId}</div>
-// }
+  return {
+    height: `${unitCellHeight}px`,
+    width:`${cellWidth}px`,
+    top:`${topOffset}px`,
+    left:`${leftOffset}px`,
+  }
+}
+
+const Handlebar = ({onDrag}) => {
+  const nodeRef = React.useRef(null);
+  
+  const updateNote = (e, data) => {
+    onDrag(data.x)
+  }
+
+  return <Draggable
+            nodeRef={nodeRef}
+            axis="x"
+            onStop={updateNote}
+          >
+      <div className="handlebar" ref={nodeRef}></div>
+    </Draggable>
+}
 
 class Note extends PureComponent{
   constructor (props){
     super(props)
-    const {timeOn, pitch, duration, bpm, color, unitCellWidth, unitCellHeight, DAWcellStyle} = props
+    const {timeOn, pitch, duration, bpm, color, unitCellWidth, 
+      unitCellHeight, noteIndex, trackIndex, updateNote} = props
 
-    let cellWidth=(bpm*duration)/60*unitCellWidth;
-    let topOffset=unitCellHeight*(127-pitch);
-    let leftOffset=(1+bpm*(timeOn)/60)*unitCellWidth;
- 
-    let style = Object.assign({
-      height: `${unitCellHeight}px`,
-      width:`${cellWidth}px`,
-      top:`${topOffset}px`,
-      left:`${leftOffset}px`,
-      backgroundColor: color,
-    }, DAWcellStyle)
+    let style = notePosition(timeOn, duration, bpm, pitch, unitCellWidth, unitCellHeight)
+    style.backgroundColor = color
 
-    this.state = {style, duration: duration}
+    this.state = { style, timeOn, bpm, unitCellWidth, unitCellHeight, pitch, duration, trackIndex, noteIndex, updateNote }
+    this.adjustLeftPoint = this.adjustLeftPoint.bind(this)
+    this.adjustRightPoint = this.adjustRightPoint.bind(this)
+  }
+
+  componentWillUnmount() {
+    
+  }
+
+  adjustLeftPoint(dX){
+    console.log("params:", this.state.timeOn, this.state.bpm, this.state.unitCellWidth)
+    const initialX = pixelsToSeconds(this.state.timeOn, this.state.bpm, this.state.unitCellWidth)
+    const deltaX = pixelsToSeconds(dX, this.state.bpm, this.state.unitCellWidth)
+    const rightPoint = this.state.timeOn + this.state.duration
+
+    const newNote = {
+      time_on: this.state.timeOn - (initialX - deltaX),
+      pitch: this.state.pitch,
+    }
+    newNote.duration = rightPoint - newNote.time_on
+
+    this.state.updateNote(this.state.trackIndex, this.state.noteIndex, newNote)
+  }
+
+  adjustRightPoint(dX){
+    const deltaX = pixelsToSeconds(dX, this.state.bpm, this.state.unitCellWidth)
+    
+    const newNote = {
+      time_on: this.state.timeOn,
+      duration: this.state.duration + deltaX,
+      pitch: this.state.pitch,
+    }
+
+    this.state.updateNote(this.state.trackIndex, this.state.noteIndex, newNote)
   }
 
   render() {
     // console.log('this.style', this.state.style)
-    return <div className="note" style={this.state.style}>{this.state.duration}</div>
+    return <div className="note" style={this.state.style}>
+      <div>
+        <Handlebar 
+          noteIndex={this.state.noteIndex} 
+          trackIndex={this.state.trackIndex}
+          onDrag={this.adjustLeftPoint}/>
+      </div>
+      <div>
+        <Handlebar 
+          noteIndex={this.state.noteIndex} 
+          trackIndex={this.state.trackIndex}
+          onDrag={this.adjustRightPoint}/>
+      </div>
+    </div>
   }
 }
 

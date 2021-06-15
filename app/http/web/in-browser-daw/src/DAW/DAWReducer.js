@@ -43,9 +43,6 @@ export const DAWReducer = function (state = defaultState, action) {
         if(trackId === action.payload.trackId){
           const newNotes = track.notes.map((note, noteId) => {
             if(noteId === action.payload.noteId){
-              console.log("old note", note)
-              console.log('setting newNote', action.payload.newNote)
-              console.log({trackId, noteId})
               return action.payload.newNote
             } else {
               return note
@@ -59,7 +56,6 @@ export const DAWReducer = function (state = defaultState, action) {
           return track
         }
       })
-      console.log("updated note:", newNoteInTrack[0].notes[37])
       return {
         ...state,
         tracks: newNoteInTrack,

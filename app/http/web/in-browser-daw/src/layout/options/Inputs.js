@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import {Typography, Button, Select, Checkbox, FormControlLabel, Grid, Slider} from "@material-ui/core";
+import {Typography, Select, Checkbox, FormControlLabel, Grid, Slider} from "@material-ui/core";
 
 const mapStateToProps = state => {
   return state;
@@ -20,7 +20,7 @@ const Dropdown = ({option, currentOptions, onChange}) => {
   let selections = option.options.map(item => <option key={item} value={item}>{item}</option> )
   const [value, setValue] = React.useState(currentOptions.composer || option.default);
 
-  React.useEffect(() => onChange({toParam: option.toParam, value}), [value])
+  React.useEffect(() => onChange({toParam: option.toParam, value}), [value, onChange, option.toParam])
 
   return (<>
     <Select
@@ -42,7 +42,7 @@ const InstrumentCheckbox = ({instrumentName, checkedDefault, toggleInstrument}) 
   React.useEffect(() => {
     console.log("effect")
     toggleInstrument({toParam: instrumentName, value: checked})
-  }, [checked])
+  }, [checked, toggleInstrument, instrumentName])
 
   return(
     <Grid item>
@@ -78,7 +78,7 @@ const SliderInput = ({option, onChange, currentOptions}) => {
 
   React.useEffect(() => {
     onChange({value, toParam: option.toParam})
-  }, [value])
+  }, [value, onChange, option.toParam])
 
   return (
     <Grid item>

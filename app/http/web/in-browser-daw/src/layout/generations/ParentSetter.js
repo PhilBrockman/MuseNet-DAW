@@ -1,4 +1,4 @@
-import {Button, IconButton} from "@material-ui/core"
+import {Button} from "@material-ui/core"
 import { connect } from 'react-redux';
 
 const mapStateToProps = state => {
