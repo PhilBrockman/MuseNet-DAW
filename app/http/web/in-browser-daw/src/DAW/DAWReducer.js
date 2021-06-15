@@ -7,7 +7,8 @@ const defaultState = {
   subDivisions: 4,
   DAWcell: {
     style: {
-      width:"40px",
+      minWidth:"45px",
+      width: "45px",
       height:"30px",
     }
   }

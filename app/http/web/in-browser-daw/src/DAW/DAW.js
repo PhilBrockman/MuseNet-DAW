@@ -5,13 +5,13 @@ import {Typography, Container, Grid, Checkbox, FormControlLabel, TextField, Inpu
 import {keymaps} from "../utilities/keymaps"
 import {Notes} from "./Notes"
 import {Settings} from "./Settings"
-import {Playhead} from "./Playhead"
+import {Playhead} from "./Playhead/Playhead"
 import {reduceNotes} from "../utilities/utilities"
-import {selectParent} from "../reducers/parentReducer"
+import {selectParent} from "../layout/generations/parentReducer"
 import api from "../api/apiClient";
 import "./daw.css"
 
-import {tracksToJSON, playMidi} from "./MIDIfier"
+import {tracksToJSON, playMidi} from "../utilities/MIDIfier"
 
 
 const mapStateToProps = state => {
@@ -141,7 +141,7 @@ const WorkArea = ({tracks, bpm}) => {
   }
 
   return <>
-  <button onClick={() => playMidi(midi)}>Will this play anthynig???</button>
+  {/* <button onClick={() => playMidi(midi)}>Will this play anthynig???</button> */}
       <div className="daw">
         <DAWBackground notes={notePool} bpm={bpm} />
         <Notes tracks={tracks} bpm={bpm} />

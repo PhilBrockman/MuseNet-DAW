@@ -3,9 +3,9 @@ import React from 'react'
 import { connect, useDispatch } from 'react-redux';
 import {Loader} from "../../utilities/Loader/Loader"
 import {statusKeys} from "../../utilities/utilities"
-import {deleteGeneration, fetchGenerations} from "../../reducers/generationsReducer"
+import {deleteGeneration, fetchGenerations} from "./generationsReducer"
 import {ParentSetter} from "./ParentSetter"
-import {store} from "../../reducers/rootReducer"
+import {store} from "../../rootReducer"
 import {IconButton, Typography, List, ListItem, ListItemText, makeStyles} from "@material-ui/core"
 import { Delete } from '@material-ui/icons';
 

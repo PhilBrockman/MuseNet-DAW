@@ -1,7 +1,7 @@
 import React from 'react'
 import { Provider } from 'react-redux';
 import {ControlPanel} from "./layout/ControlPanel"
-import {store} from "./reducers/rootReducer"
+import {store} from "./rootReducer"
 
 import {DAW} from "./DAW/DAW"
 
@@ -36,7 +36,7 @@ const App = () => {
     <ThemeProvider theme={theme}>
       <Paper>
       <CssBaseline/>
-      <AppBar position="relative">
+        <AppBar position="relative" spacing={2} margin={2}>
         <Toolbar>
           <Typography variant="h6" >
             Header Text
@@ -45,7 +45,6 @@ const App = () => {
       </AppBar>
       <main>
         <ControlPanel />
-
         <MuseNetFetcher />
         <DAW />
       </main>

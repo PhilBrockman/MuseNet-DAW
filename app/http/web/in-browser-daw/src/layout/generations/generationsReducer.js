@@ -1,5 +1,5 @@
-import api from "../api/apiClient"
-import {statusKeys} from "../utilities/utilities"
+import api from "../../api/apiClient"
+import {statusKeys} from "../../utilities/utilities"
 import { createSelector } from 'reselect'
 
 
@@ -55,7 +55,6 @@ export const deleteGeneration = (id) => {
 }
   
 export const generationsReducer = function (state = defaultState, action) {
-  console.log("generations reducer", action.type)
   switch (action.type) {
     case "STATUS_CHANGE":
       return {
