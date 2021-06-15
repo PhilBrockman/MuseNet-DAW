@@ -5,7 +5,12 @@ const defaultState = {
   visibleTracks: [],
   bpm: 120,
   subDivisions: 4,
-  dawResolution: 40,
+  DAWcell: {
+    style: {
+      width:"40px",
+      height:"30px",
+    }
+  }
 }
 
 export const DAWReducer = function (state = defaultState, action) {

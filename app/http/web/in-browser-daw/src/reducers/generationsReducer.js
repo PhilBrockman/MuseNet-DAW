@@ -1,5 +1,7 @@
 import api from "../api/apiClient"
 import {statusKeys} from "../utilities/utilities"
+import { createSelector } from 'reselect'
+
 
 const defaultState = {
   status: "idle",
@@ -11,6 +13,13 @@ const changeFetchStatus = status => {
     type: "STATUS_CHANGE",
     payload: status
   }
+}
+
+export const selectGenerations = (state) => state.generations
+
+export const findGenerationById = (state, generationId) => {
+  console.log('{state, generationId}', {state, generationId})
+  return selectGenerations(state).find((generation) => generation._id["$oid"] === generationId)
 }
 
 export const fetchGenerations = () => {
@@ -63,3 +72,12 @@ export const generationsReducer = function (state = defaultState, action) {
       return state;
   }
 };
+
+
+export const selectGenerationIds = createSelector(
+  // First, pass one or more "input selector" functions:
+  selectGenerations,
+  // Then, an "output selector" that receives all the input results as arguments
+  // and returns a final result value
+  generations => generations.map(generation => generation._id["$oid"])
+)

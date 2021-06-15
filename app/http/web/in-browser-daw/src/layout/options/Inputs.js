@@ -1,6 +1,5 @@
 import React from 'react';
-import { connect, useSelector } from 'react-redux';
-import {store} from "../../reducers/rootReducer"
+import { connect } from 'react-redux';
 import {Typography, Button, Select, Checkbox, FormControlLabel, Grid, Slider} from "@material-ui/core";
 
 const mapStateToProps = state => {
@@ -17,24 +16,6 @@ const mapDispatchToProps = dispatch => {
   }
 };
 
-const ParentDiff = ({attr, comparison, resetValueCallback}) => {
-  const parent = useSelector(state => state.parent)?.parent
-  if(!parent || parent[attr] === comparison) return null;
-  const convert = (item) => {
-    if(typeof item === typeof true){
-      return "❌";
-    } else {
-      return item
-    }
-  }
-  if(!parent) return null;
-  console.log('parent[attr]', typeof comparison, typeof parent[attr])
-  return <div>
-    <Typography>{convert(parent[attr])}</Typography>
-    <Button  onClick={() => resetValueCallback(parent[attr])}>Reset</Button>
-  </div>
-}
-
 const Dropdown = ({option, currentOptions, onChange}) => {
   let selections = option.options.map(item => <option key={item} value={item}>{item}</option> )
   const [value, setValue] = React.useState(currentOptions.composer || option.default);
@@ -48,7 +29,6 @@ const Dropdown = ({option, currentOptions, onChange}) => {
       onChange={(e) => setValue(e.target.value)}>
       {selections}
     </Select>
-    <ParentDiff attr="composer" comparison={value} resetValueCallback={setValue} />
     </>
   );
 }
@@ -74,8 +54,6 @@ const InstrumentCheckbox = ({instrumentName, checkedDefault, toggleInstrument}) 
           />}
         label={instrumentName}
       />
-    
-      <ParentDiff attr={instrumentName} comparison={checked} resetValueCallback={setChecked} />
     </Grid>
   );
 }
@@ -111,7 +89,6 @@ const SliderInput = ({option, onChange, currentOptions}) => {
         step={step_size}
         onChange={handleChange}
         valueLabelDisplay="auto"/>
-    <ParentDiff attr={option.toParam} comparison={value} resetValueCallback={setValue} />
     </Grid>
   );
 }

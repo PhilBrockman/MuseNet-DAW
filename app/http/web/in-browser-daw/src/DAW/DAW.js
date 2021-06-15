@@ -1,17 +1,18 @@
+
+import React, { PureComponent } from 'react'
+import { useSelector, connect } from 'react-redux';
+import {Typography, Container, Grid, Checkbox, FormControlLabel, TextField, InputAdornment} from '@material-ui/core';
 import {keymaps} from "../utilities/keymaps"
 import {Notes} from "./Notes"
-import React from 'react'
-import { useSelector } from 'react-redux';
 import {Settings} from "./Settings"
+import {Playhead} from "./Playhead"
 import {reduceNotes} from "../utilities/utilities"
-import Draggable from 'react-draggable'; // The default
-
-import {Typography, Container, Grid, Checkbox, FormControlLabel, TextField, InputAdornment} from '@material-ui/core';
-import { connect } from 'react-redux';
+import {selectParent} from "../reducers/parentReducer"
 import api from "../api/apiClient";
 import "./daw.css"
 
 import {tracksToJSON, playMidi} from "./MIDIfier"
+
 
 const mapStateToProps = state => {
   return state;
@@ -28,23 +29,23 @@ const fetchTracksById = async (id) => {
 }
 
 export const DAWComponent = ({DAW, setTracks}) => {
-  const parent = useSelector(state => state.parent)?.parent
+  const parentId = useSelector(selectParent)
 
   //update the tracks based on the parent
   React.useEffect(() => {
-    console.log("parentChanged")
-    if(parent) {
-      fetchTracksById(parent._id["$oid"]).then(res => {
+    console.log("parentChanged", parentId)
+    if(parentId) {
+      fetchTracksById(parentId).then(res => {
         console.log('res.data', res.data)
         setTracks(res.data)
       })
       
     };
-  }, [parent])
+  }, [parentId])
 
   const visibleTracks = DAW.tracks.filter(track => track.visible)
 
-  if(parent){
+  if(parentId){
     return <Container>
       <Grid>
         <Grid item>
@@ -63,93 +64,98 @@ export const DAWComponent = ({DAW, setTracks}) => {
   }
 }
 
-const DAWBackground = ({notes, bpm, children}) => {
-  let minNote = notes.reduce((min, b) => Math.min(min, b.pitch), 10000);
-  let maxNote = notes.reduce((min, b) => Math.max(min, b.pitch), 0);
-  let filteredKeys = Object.keys(keymaps)//.filter((item) => (item >= minNote && item <= maxNote))
-  let totalLengthInSeconds = Math.ceil(Math.max.apply(Math, notes.map(function(o) { return o.time_on+o.duration; })))
-  let numBeats = Math.ceil(totalLengthInSeconds*bpm/60);
-  let boxes = Array.from(Array(numBeats).keys())
+const DAWcell = ({content, additonalClasses}) => {
+  const DAWcellStyle = useSelector(state => state.DAW.DAWcell.style)
+  let allClasses = ["daw-cell"];
+  if(additonalClasses?.length > 0){
+    allClasses = [...allClasses, ...additonalClasses]
+  }
 
-  let pianoKeys = filteredKeys.map((item, idx) => {
-    let c = keymaps[item].includes("#") ? "accidental" : "natural";
-    return <div className={[c, "keyNote"].join(" ")} key={idx}>{keymaps[item]}</div>
-  }).reverse()
+  return <div className={allClasses.join(" ")} style={DAWcellStyle}>{content}</div>
+}
 
-  let header = <div className="key-row">
-                    <div className="daw-cell"></div>
-                    {boxes.map((item, idx) => {
-                      return <div className="daw-cell" key={idx}>{idx}</div>
-                    })}
-                </div>
+class DAWBackground extends PureComponent {
+  constructor(props){
+    super(props)
+    const {notes, bpm} = props
 
-  let body = filteredKeys.map((item, idx) => {
-    let b = boxes.map((item, idx) => {
-      return <div
-              className={["background-cell", "daw-cell"].join(" ")}
-              key={"beats"+idx}></div>
+    let minNote = notes.reduce((min, b) => Math.min(min, b.pitch), 10000);
+    let maxNote = notes.reduce((min, b) => Math.max(min, b.pitch), 0);
+    let filteredKeys = Object.keys(keymaps)//.filter((item) => (item >= minNote && item <= maxNote))
+    let totalLengthInSeconds = Math.ceil(Math.max.apply(Math, notes.map(function(o) { return o.time_on+o.duration; })))
+    let numBeats = Math.ceil(totalLengthInSeconds*bpm/60);
+    let boxes = Array.from(Array(numBeats).keys())
+
+    let pianoKeys = filteredKeys.map((item, idx) => {
+      let c = keymaps[item].includes("#") ? "accidental" : "natural";
+      return <DAWcell 
+                key={idx}
+                content={keymaps[item]}
+                additonalClasses={[c, "keyNote"]}/>
     })
-    return <div className="key-row" key={idx}>
-      <div className="accidental keyNote">
-        {pianoKeys[idx]}
+
+    let header = <div className="key-row">
+                      <DAWcell />
+                      {boxes.map((item, idx) => {
+                        return <DAWcell key={idx} content={idx}/>
+                      })}
+                  </div>
+
+    let body = filteredKeys.map((item, idx) => {
+      let b = boxes.map((item, idx) => {
+        return <DAWcell additonalClasses={["background-cell"]} key={"beats"+idx}/>
+      })
+      return <div className="key-row" key={idx}>
+        <DAWcell 
+                key={idx}
+                content={pianoKeys[idx]}
+                additonalClasses={["accidental", "keyNote"]}/>
+        {b}
       </div>
-      {b}
-    </div>
-  })
-  return <>
-    <div >
-      {header}
-      <div>
-        {body}
+    })
+
+    this.state = {header, body}
+  }
+
+  render(){
+    return <>
+      <div >
+        {this.state.header}
+        <div>
+          {this.state.body}
+        </div>
       </div>
-    </div>
-  </>
+    </>
+  }
 }
 
 const WorkArea = ({tracks, bpm}) => {
   const notePool = reduceNotes(tracks)
-  const dawResolution = useSelector(state => state.DAW.dawResolution)
-  const [playheadPixels, setPlayheadPixels] = React.useState(dawResolution)
+  const dawResolution = parseInt(useSelector(state => state.DAW.DAWcell.style.width))
+  const midi= tracksToJSON(tracks)
 
   if(notePool.length === 0) return "Select some tracks to get started";
 
-  const midi= tracksToJSON(tracks)
-  console.log('midi', midi)
+  const reposition = (n, nodeRef) => {
+    nodeRef.current.style.left = `${parseInt(nodeRef.current.style.left || 0)+n}px`
+  }
 
   return <>
+  <button onClick={() => playMidi(midi)}>Will this play anthynig???</button>
       <div className="daw">
-        <button onClick={() => playMidi(midi)}>Will this play anthynig???</button>
         <DAWBackground notes={notePool} bpm={bpm} />
-        <Notes tracks={tracks} bpm={bpm} playheadPosition={playheadPixels}/>
+        <Notes tracks={tracks} bpm={bpm} />
         <Playhead 
-            setPosition={setPlayheadPixels}
             initialOffset={dawResolution}
+            reposition={reposition}
             />
       </div>
   </>
 }
 
-export const ItemTypes = {
-  PLAYHEAD: 'playhead'
-}
 
-const Playhead = ({ setPosition, initialOffset}) => {
-  const nodeRef = React.useRef(null);
-  const style = { cursor: "move" }
-  const handleDrag = (e, data) => setPosition(data.lastX)
 
-  return <Draggable 
-            axis="x"
-            nodeRef={nodeRef}
-            onDrag={handleDrag}
-            defaultPosition={{x: initialOffset, y: 0}}
-            >
-            <div className="playhead" 
-              style={style}
-              ref={nodeRef}
-              />
-          </Draggable>
-}
+
 
 export const DAW = connect(mapStateToProps, mapDispatchToProps)(DAWComponent);
 

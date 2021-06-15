@@ -22,7 +22,6 @@ const SetBPM = ({initialBPM, setBPM }) => {
              onChange={e => setValue(parseInt(e.target.value))}
              InputProps={{
                endAdornment: <InputAdornment position="end">BPM</InputAdornment>,
-               shrink: true
              }}
            />
  }
