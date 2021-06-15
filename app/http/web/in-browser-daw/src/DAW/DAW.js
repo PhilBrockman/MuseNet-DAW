@@ -1,21 +1,17 @@
-// import "./daw.css"
-import {keymaps} from "./keymaps"
+import {keymaps} from "../utilities/keymaps"
 import {Notes} from "./Notes"
-// import useKeyPress from "utilities/useKeyPress"
 import React from 'react'
 import { useSelector } from 'react-redux';
 import {Settings} from "./Settings"
-import {TrackViewer} from "./TrackViewer"
 import {reduceNotes} from "../utilities/utilities"
-import "./daw.css"
 import Draggable from 'react-draggable'; // The default
 
-// import {Notes} from './Notes'
-// import {Score, autoScore} from "./Scorer"
-// import {reduceNotes} from "./utils"
 import {Typography, Container, Grid, Checkbox, FormControlLabel, TextField, InputAdornment} from '@material-ui/core';
 import { connect } from 'react-redux';
 import api from "../api/apiClient";
+import "./daw.css"
+
+import {tracksToJSON, playMidi} from "./MIDIfier"
 
 const mapStateToProps = state => {
   return state;
@@ -117,10 +113,14 @@ const WorkArea = ({tracks, bpm}) => {
 
   if(notePool.length === 0) return "Select some tracks to get started";
 
+  const midi= tracksToJSON(tracks)
+  console.log('midi', midi)
+
   return <>
       <div className="daw">
+        <button onClick={() => playMidi(midi)}>Will this play anthynig???</button>
         <DAWBackground notes={notePool} bpm={bpm} />
-        <Notes tracks={tracks} bpm={bpm} />
+        <Notes tracks={tracks} bpm={bpm} playheadPosition={playheadPixels}/>
         <Playhead 
             setPosition={setPlayheadPixels}
             initialOffset={dawResolution}

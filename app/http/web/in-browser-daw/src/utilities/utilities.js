@@ -10,3 +10,19 @@ export const reduceNotes = (data) =>
     }
     return acc;
   }, []);
+
+  export const playheadToSeconds = (ph, bpm, dawRes) => {
+    //normalize playhead
+    const normalizedPixels = ph - dawRes;
+    //conert to measures
+    const beats = normalizedPixels/dawRes;
+    //convert measures to seconds
+    const secs = beats / bpm * 60 
+    return secs 
+  }
+
+  export const secondsToPlayhead = (seconds, bpm, dawRes) => {
+    const beats = seconds * bpm/60
+    const leftOffset = beats*dawRes
+    return dawRes + leftOffset // accounts for the note column
+  }
