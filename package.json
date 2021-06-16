@@ -6,6 +6,7 @@
     "react-dnd-html5-backend": "^14.0.0",
     "react-draggable": "^4.4.3",
     "reselect": "^4.0.0",
-    "tone": "^14.7.77"
+    "tone": "^14.7.77",
+    "why-did-you-update": "^1.0.8"
   }
 }

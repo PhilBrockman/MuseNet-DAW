@@ -6,10 +6,10 @@ import {Typography, Grid} from "@material-ui/core/";
 // import "./OptionList.css"
 
 const mapStateToProps = state => {
-  return state;
+  return state.options;
 };
 
-const Section = ({items}) =>  items.children.map((item ,id) => <InputSelector  key={id} data={item} />)
+const Section = ({items}) => items.children.map((item ,id) => <InputSelector  key={id} data={item} />)
 
 const OptionListComponent = () => {
 

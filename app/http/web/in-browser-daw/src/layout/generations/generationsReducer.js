@@ -17,6 +17,19 @@ const changeFetchStatus = status => {
 
 export const selectGenerations = (state) => state.generations
 
+export const allGenerations = createSelector(
+  // First, pass one or more "input selector" functions:
+  selectGenerations,
+  // Then, an "output selector" that receives all the input results as arguments
+  // and returns a final result value
+  generations => generations.generations
+)
+
+export const getStatus = createSelector(
+  selectGenerations,
+  generations => generations.status
+)
+
 export const findGenerationById = (state, generationId) => {
   console.log('{state, generationId}', {state, generationId})
   return selectGenerations(state).find((generation) => generation._id["$oid"] === generationId)

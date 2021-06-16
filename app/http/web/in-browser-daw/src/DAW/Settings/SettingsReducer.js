@@ -1,13 +1,11 @@
 // import {options} from "./../options/MuseNetOptions"
+import { createSelector } from 'reselect'
 
 const defaultState = {
   bpm: 120,
   subDivisions: 4,
   unitCell: {
-    style: {
-      width: "45px",
-      height:"30px",
-    },
+    height: 50,
     oneBeatWidth: 145,
   }
 }
@@ -23,3 +21,10 @@ export const SettingsReducer = function (state = defaultState, action) {
       return state;
   }
 };
+
+const selectBPM = state => state.settings
+
+export const BPM = createSelector(
+  selectBPM,
+  settings => settings.bpm
+)

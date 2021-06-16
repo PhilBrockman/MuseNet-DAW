@@ -1,9 +1,9 @@
 // import APIClient from './utilities/apiClient'
 import React from 'react'
-import { connect, useDispatch } from 'react-redux';
+import { connect, useDispatch, useSelector } from 'react-redux';
 import {Loader} from "../../utilities/Loader/Loader"
 import {statusKeys} from "../../utilities/utilities"
-import {deleteGeneration, fetchGenerations} from "./generationsReducer"
+import {deleteGeneration, fetchGenerations, allGenerations, getStatus} from "./generationsReducer"
 import {ParentSetter} from "./ParentSetter"
 import {store} from "../../rootReducer"
 import {IconButton, List, ListItem, ListItemText} from "@material-ui/core"
@@ -12,7 +12,7 @@ import { Delete } from '@material-ui/icons';
 store.dispatch(fetchGenerations())
 
 const mapStateToProps = state => {
-  return state;
+  return state.generations;
 };
 
 const Generation = ({data}) => {
@@ -27,12 +27,15 @@ const Generation = ({data}) => {
 }
 
 
-export const GenerationsComponent = ({generations}) => {
-  if (generations.status === statusKeys.LOADING){
+export const GenerationsComponent = () => {
+  const generations = useSelector(allGenerations)
+  const status = useSelector(getStatus)
+
+  if (status === statusKeys.LOADING){
     return <Loader />
   }
 
-  const mappedGenerations = generations.generations.map(generation => <Generation key={generation._id["$oid"]} data={generation}/>)
+  const mappedGenerations = generations.map(generation => <Generation key={generation._id["$oid"]} data={generation}/>)
   return <>
   <List subheader={<li />}>
     <li>Generations:</li>

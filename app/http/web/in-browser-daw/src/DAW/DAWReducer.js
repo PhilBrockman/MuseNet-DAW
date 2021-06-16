@@ -1,4 +1,6 @@
 // import {options} from "./../options/MuseNetOptions"
+import { createSelector } from 'reselect'
+
 
 const defaultState = {
   tracks: []
@@ -51,3 +53,16 @@ export const DAWReducer = function (state = defaultState, action) {
       return state;
   }
 };
+
+const getDAW = state => state.DAW
+
+export const fetchTracks = createSelector(
+  getDAW,
+  DAW => DAW.tracks
+)
+
+export const DAWvisibleTracks = createSelector(
+  getDAW,
+  DAW => DAW.tracks.filter(track => track.visible)
+)
+

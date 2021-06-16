@@ -1,9 +1,12 @@
 import React from 'react';
 import { Grid, Checkbox, FormControlLabel, TextField, InputAdornment} from '@material-ui/core';
 import { connect, useSelector } from 'react-redux';
+import {fetchTracks} from "../DAWReducer"
+import {BPM} from "./SettingsReducer"
+
 
 const mapStateToProps = state => {
-  return state;
+  return state.settings;
 };
 
 const mapDispatchToProps = dispatch => {
@@ -15,7 +18,10 @@ const mapDispatchToProps = dispatch => {
 
 const SetBPM = ({initialBPM, setBPM }) => {
   const [value, setValue] = React.useState(initialBPM)
-  React.useEffect(() => {setBPM(parseInt(value))}, [value, setBPM])
+  React.useEffect(() => {
+    
+    setBPM(parseInt(value))
+  }, [value, setBPM])
   return <TextField
             size="small"
              value={value}
@@ -27,11 +33,13 @@ const SetBPM = ({initialBPM, setBPM }) => {
  }
 
 const SettingsComponent=({toggleTrackVisibility, setBPM}) => {
-  const tracks = useSelector(state => state.DAW)
-  const settings = useSelector(state => state.settings)
+  const tracks = useSelector(fetchTracks)
+  console.log('tracks', tracks)
+  const bpm = useSelector(BPM)
+  console.log('settings', bpm)
 
   const ToggleTracks = () => {
-    return tracks.tracks.map((track, id) => {
+    return tracks.map((track, id) => {
       return <FormControlLabel
             key={id}
             control={<Checkbox 
@@ -43,10 +51,9 @@ const SettingsComponent=({toggleTrackVisibility, setBPM}) => {
     })
   }
   return <>
-    {JSON.stringify(tracks)}
     <Grid container item xs={12} direction="row" spacing={2}>
       <Grid item> <ToggleTracks /></Grid>
-      <Grid item> <SetBPM setBPM={setBPM} initialBPM={settings.bpm}/> </Grid>
+      <Grid item> <SetBPM setBPM={setBPM} initialBPM={bpm}/> </Grid>
     </Grid>
   </>
 }

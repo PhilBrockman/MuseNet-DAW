@@ -20,8 +20,8 @@ const PlayheadComponent = ({ setPosition, initialOffset, reposition}) => {
   const playhead = <Draggable 
             axis="x"
             nodeRef={nodeRef}
-            onDrag={handleDrag}
-            defaultPosition={{x: initialOffset, y: 0}}
+            onStop={handleDrag}
+            defaultPosition={{x: 50, y: 0}}
             >
             <div className="playhead" 
               style={style}

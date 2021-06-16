@@ -2,7 +2,7 @@ import {Button} from "@material-ui/core"
 import { connect } from 'react-redux';
 
 const mapStateToProps = state => {
-  return state;
+  return state.parent;
 };
 
 const mapDispatchToProps = dispatch => {
