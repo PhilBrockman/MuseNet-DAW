@@ -56,6 +56,7 @@ export const WorkArea = ({bpm, totalLengthInSeconds}) => {
   })
 
   return <>
+  
   {/* <button onClick={() => playMidi(midi)}>Will this play anthynig???</button> */}
       <div className="daw">
         <Subdivisions numCells={numBeats} />
