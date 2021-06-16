@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import {useSelector, connect} from "react-redux"
 import Draggable from 'react-draggable'
-import {pixelsToSeconds} from "../utilities/utilities"
+import {pixelsToSeconds} from "../../utilities/utilities"
 import "./Notes.css"
 
 let COLORS = ["red", "blue", "green"]
@@ -18,8 +18,8 @@ const mapDispatchToProps = dispatch => {
 
 
 export const NotesComponent = ({bpm, changeNote}) => {
-  let unitCellHeight= parseInt(useSelector(state => state.DAW.unitCell.style.height));
-  let unitCellWidth = parseInt(useSelector(state => state.DAW.unitCell.style.width));
+  let unitCellHeight= parseInt(useSelector(state => state.settings.unitCell.style.height));
+  let unitCellWidth = parseInt(useSelector(state => state.settings.unitCell.style.width));
 
   let tracks = useSelector(state => state.DAW.tracks).filter(track => track.visible)
 

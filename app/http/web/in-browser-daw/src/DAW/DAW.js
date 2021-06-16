@@ -3,8 +3,8 @@ import React, { PureComponent } from 'react'
 import { useSelector, connect } from 'react-redux';
 import {Container, Grid} from '@material-ui/core';
 import {keymaps} from "../utilities/keymaps"
-import {Notes} from "./Notes"
-import {Settings} from "./Settings"
+import {Notes} from "./Notes/Notes"
+import {Settings} from "./Settings/Settings"
 import {Playhead} from "./Playhead/Playhead"
 import {reduceNotes} from "../utilities/utilities"
 import {selectParent} from "../layout/generations/parentReducer"
@@ -29,9 +29,8 @@ const fetchTracksById = async (id) => {
 }
 
 export const DAWComponent = ({setTracks}) => {
-  const DAW = useSelector(state => state.DAW)
   const parentId = useSelector(selectParent)
-  const visibleTracks = DAW.tracks.filter(track => track.visible)
+  const visibleTracks = useSelector(state => state.DAW).tracks.filter(track => track.visible)
 
   //update the tracks based on the parent
   React.useEffect(() => {
@@ -56,7 +55,6 @@ export const DAWComponent = ({setTracks}) => {
         <Grid item>
           <WorkArea 
               tracks={visibleTracks}
-              bpm={DAW.bpm}
               />
         </Grid>
       </Grid>
@@ -67,7 +65,7 @@ export const DAWComponent = ({setTracks}) => {
 }
 
 const DAWcell = ({content, additonalClasses, fixedWidth=false}) => {
-  const unitCell = useSelector(state => state.DAW.unitCell)
+  const unitCell = useSelector(state => state.settings.unitCell)
   // const bpm = useSelector(state => state.DAW.bpm)
   let allClasses = ["daw-cell"];
   if(additonalClasses?.length > 0){
@@ -126,9 +124,10 @@ class DAWBackground extends PureComponent {
   }
 }
 
-const WorkArea = ({tracks, bpm}) => {
+const WorkArea = ({tracks}) => {
   const notePool = reduceNotes(tracks)
-  const unitCellWidth = parseInt(useSelector(state => state.DAW.unitCell.style.width))
+  const unitCellWidth = parseInt(useSelector(state => state.settings.unitCell.style.width))
+  const bpm = useSelector(state => state.settings.bpm)
   // const midi= tracksToJSON(tracks)
 
   if(notePool.length === 0) return "Select some tracks to get started";

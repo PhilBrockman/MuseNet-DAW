@@ -1,6 +1,6 @@
 import React from 'react';
 import { Grid, Checkbox, FormControlLabel, TextField, InputAdornment} from '@material-ui/core';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 
 const mapStateToProps = state => {
   return state;
@@ -26,9 +26,12 @@ const SetBPM = ({initialBPM, setBPM }) => {
            />
  }
 
-const SettingsComponent=({DAW, toggleTrackVisibility, setBPM}) => {
+const SettingsComponent=({toggleTrackVisibility, setBPM}) => {
+  const tracks = useSelector(state => state.DAW)
+  const settings = useSelector(state => state.settings)
+
   const ToggleTracks = () => {
-    return DAW.tracks.map((track, id) => {
+    return tracks.tracks.map((track, id) => {
       return <FormControlLabel
             key={id}
             control={<Checkbox 
@@ -39,10 +42,13 @@ const SettingsComponent=({DAW, toggleTrackVisibility, setBPM}) => {
           />
     })
   }
-  return <Grid container item xs={12} direction="row" spacing={2}>
-    <Grid item> <ToggleTracks /></Grid>
-    <Grid item> <SetBPM setBPM={setBPM} initialBPM={DAW.bpm}/> </Grid>
-  </Grid>
+  return <>
+    {JSON.stringify(tracks)}
+    <Grid container item xs={12} direction="row" spacing={2}>
+      <Grid item> <ToggleTracks /></Grid>
+      <Grid item> <SetBPM setBPM={setBPM} initialBPM={settings.bpm}/> </Grid>
+    </Grid>
+  </>
 }
 
 export const Settings = connect(mapStateToProps, mapDispatchToProps)(SettingsComponent);

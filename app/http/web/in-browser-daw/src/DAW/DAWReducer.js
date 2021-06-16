@@ -1,16 +1,7 @@
 // import {options} from "./../options/MuseNetOptions"
 
 const defaultState = {
-  tracks: [],
-  bpm: 120,
-  subDivisions: 4,
-  unitCell: {
-    style: {
-      width: "45px",
-      height:"30px",
-    },
-    oneBeatWidth: 145,
-  }
+  tracks: []
 }
 
 export const DAWReducer = function (state = defaultState, action) {
@@ -19,11 +10,6 @@ export const DAWReducer = function (state = defaultState, action) {
       return {
         ...state,
         tracks: action.payload
-      }
-    case "SET_BPM":
-      return {
-        ...state,
-        bpm: action.payload
       }
     case "TOGGLE_TRACK_VISIBILITY":
       const newTracks = state.tracks.map((track, pos) => {

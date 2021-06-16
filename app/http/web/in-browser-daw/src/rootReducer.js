@@ -8,6 +8,7 @@ import {playheadReducer} from "./DAW/Playhead/playheadReducer"
 
 import thunkMiddleware from 'redux-thunk'
 import { composeWithDevTools } from 'redux-devtools-extension'
+import { SettingsReducer } from './DAW/Settings/SettingsReducer';
 
 const composedEnhancer = composeWithDevTools(applyMiddleware(thunkMiddleware))
 
@@ -17,6 +18,7 @@ const rootReducer =  combineReducers({
   parent: parentReducer,
   DAW: DAWReducer,
   playhead: playheadReducer,
+  settings: SettingsReducer,
 });
 
 export const store = createStore(rootReducer, composedEnhancer)
