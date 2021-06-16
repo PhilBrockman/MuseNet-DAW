@@ -28,6 +28,7 @@ export const DAWReducer = function (state = defaultState, action) {
         tracks: newTracks
       }
     case "CHANGE_NOTE":
+
       const newNoteInTrack = state.tracks.map((track, trackId) => {
         if(trackId === action.payload.trackId){
           const newNotes = track.notes.map((note, noteId) => {

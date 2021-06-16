@@ -2,14 +2,11 @@
 import React from 'react'
 import { useSelector, connect } from 'react-redux';
 import {Container, Grid} from '@material-ui/core';
-import {keymaps} from "../utilities/keymaps"
-import {Notes} from "./Notes/Notes"
+import {WorkArea} from "./WorkArea"
 import {Settings} from "./Settings/Settings"
-import {getUnitCell} from "./Settings/SettingsReducer"
-import {Playhead} from "./Playhead/Playhead"
 import {reduceNotes} from "../utilities/utilities"
 
-import {DAWvisibleTracks} from "./DAWReducer"
+import {fetchTracks} from "./DAWReducer"
 import {BPM} from "./Settings/SettingsReducer"
 import {selectParent} from "../layout/generations/parentReducer"
 import api from "../api/apiClient";
@@ -34,12 +31,12 @@ const fetchTracksById = async (id) => {
 
 export const DAWComponent = ({setTracks}) => {
   const parentId = useSelector(selectParent)
-  const visibleTracks = useSelector(DAWvisibleTracks)
-  console.log("I'm rerendering", visibleTracks)
+  const tracks = useSelector(fetchTracks)
+  console.log("I'm rerendering", tracks)
 
   const bpm = useSelector(BPM)
-  let totalLengthInSeconds = Math.ceil(Math.max.apply(Math, reduceNotes(visibleTracks).map(function(o) { return o.time_on+o.duration; })))
-
+  let totalLengthInSeconds = Math.ceil(Math.max.apply(Math, reduceNotes(tracks.filter(track=> track.visible)).map(function(o) { return o.time_on+o.duration; })))
+  
   //update the tracks based on the parent
   React.useEffect(() => {
     console.log("parentChanged", parentId)
@@ -58,6 +55,7 @@ export const DAWComponent = ({setTracks}) => {
         <Grid item>
           <Settings />
         </Grid>
+        <Grid item>{JSON.stringify(tracks)}}</Grid>
         <Grid item>
           <WorkArea 
               totalLengthInSeconds={totalLengthInSeconds}
@@ -71,70 +69,6 @@ export const DAWComponent = ({setTracks}) => {
   }
 }
 
-const DAWcell = ({content, additonalClasses, fixedWidth=false}) => {
-  const unitCell = useSelector(getUnitCell)
-
-  let allClasses = ["daw-cell"];
-  if(additonalClasses?.length > 0){
-    allClasses = [...allClasses, ...additonalClasses]
-  }
-  const width= fixedWidth ? 50 : unitCell.oneBeatWidth;
-  const height = unitCell.height
-  return <div className={allClasses.join(" ")} style={{width: `${width}px`, height:`${height}px`}}>{content}</div>
-}
-
-const BoxColumn = ({header, numKeys}) => {
-  return <div className="column">
-      <DAWcell content={header} />
-      {   Array.from(Array(numKeys).keys()).map(box => <DAWcell key={box}/>)  }
-  </div>
-}
-
-
-const WorkArea = ({bpm, totalLengthInSeconds}) => {
-  // const midi= tracksToJSON(tracks)
-  if(totalLengthInSeconds <= 0) return "Select tracks"
-
-  const reposition = (n, nodeRef) => {
-    nodeRef.current.style.left = `${parseInt(nodeRef.current.style.left || 0)+n}px`
-  }
-
-  const filteredKeys = Object.keys(keymaps)
-
-  let numBeats = Math.ceil(totalLengthInSeconds*bpm/60);
-  let boxes = Array.from(Array(numBeats).keys())
-
-  let pianoKeys = filteredKeys.map((item, idx) => {
-    let c = keymaps[item].includes("#") ? "accidental" : "natural";
-    return <DAWcell fixedWidth key={idx} additonalClasses={[c].join(" ")} content={keymaps[item]} />
-  })
-
-  let body = boxes.map((box) => {
-    return <BoxColumn key={box} header={box} numKeys={pianoKeys.length}/>
-  })
-
-  return <>
-  {/* <button onClick={() => playMidi(midi)}>Will this play anthynig???</button> */}
-      <div className="daw">
-        <DAWBackground body={body} pianoKeys={pianoKeys} />
-        <Notes bpm={bpm} />
-        <Playhead reposition={reposition}/>
-      </div>
-  </>
-}
-
-const DAWBackground = ({pianoKeys, body})=> {
-    console.log('repainting daw background')
-    return <>
-      <div className="row">
-        <div className="column">
-          <DAWcell fixedWidth />
-          {pianoKeys}
-        </div>
-        {body}
-      </div>
-    </>
-}
 
 export const DAW = connect(mapStateToProps, mapDispatchToProps)(DAWComponent);
 

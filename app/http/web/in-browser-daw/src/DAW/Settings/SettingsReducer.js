@@ -3,11 +3,12 @@ import { createSelector } from 'reselect'
 
 const defaultState = {
   bpm: 120,
-  subDivisions: 4,
   unitCell: {
     height: 50,
-    oneBeatWidth: 145,
-  }
+    oneBeatWidth: 144,
+    subdivisions: 4,
+    snapToArray: true,
+  },
 }
 
 export const SettingsReducer = function (state = defaultState, action) {

@@ -31,3 +31,12 @@ export const reduceNotes = (data) =>
     const leftOffset = beats*dawRes
     return dawRes + leftOffset // accounts for the note column
   }
+
+  export const secondsToBeats = (secs, bpm) => {
+    const bps = bpm/60;
+    return secs*bps
+  }
+
+  export const beatsToSeconds = (beats, bpm) => {
+    return beats/bpm*60
+  }

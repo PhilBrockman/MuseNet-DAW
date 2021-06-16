@@ -50,8 +50,8 @@ const SettingsComponent=({toggleTrackVisibility, setBPM}) => {
   }
   return <>
     <Grid container item xs={12} direction="row" spacing={2}>
-      {/* <Grid item> <ToggleTracks /></Grid>
-      <Grid item> <SetBPM setBPM={setBPM} initialBPM={bpm}/> </Grid> */}
+      <Grid item> <ToggleTracks /></Grid>
+      <Grid item> <SetBPM setBPM={setBPM} initialBPM={bpm}/> </Grid>
     </Grid>
   </>
 }

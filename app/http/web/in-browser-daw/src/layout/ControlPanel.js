@@ -34,4 +34,5 @@ export const ControlPanel = () => {
             </Grid>
           </Grid>
         </Container>
-      </>}
+      </>
+}

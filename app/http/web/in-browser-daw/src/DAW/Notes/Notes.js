@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import {useSelector, connect} from "react-redux"
 import Draggable from 'react-draggable'
-import {pixelsToSeconds} from "../../utilities/utilities"
+import {pixelsToSeconds, secondsToBeats, beatsToSeconds} from "../../utilities/utilities"
 import {getUnitCell} from "../Settings/SettingsReducer"
 import {DAWvisibleTracks} from "../DAWReducer"
 import "./Notes.css"
@@ -18,6 +18,13 @@ const mapDispatchToProps = dispatch => {
   }
 };
 
+const snapToGrid = (seconds, bpm, divisions) => {
+  const beats = secondsToBeats(seconds, bpm)
+  const rounded = Math.round(beats*divisions)/divisions
+  const secs = beatsToSeconds(rounded, bpm)
+  // console.log({seconds, beats, rounded, secs})
+  return [secs, secs-seconds]
+}
 
 export const NotesComponent = ({bpm, changeNote}) => {
   const unitCell = useSelector(getUnitCell)
@@ -26,10 +33,26 @@ export const NotesComponent = ({bpm, changeNote}) => {
   let tracks = useSelector(DAWvisibleTracks)
   
   const updateNote = (trackIndex, noteIndex, note) => {
+    const newNote = {...note}
+    const oldNote = tracks[trackIndex].notes[noteIndex]
+    console.log({oldNote, newNote})
+    if(unitCell.snapToArray){
+      console.log("unit cell snapeed")
+      //check if left changed
+      if(newNote.time_on !== oldNote.time_on){
+        const [newTimeOn, diff] = snapToGrid(newNote.time_on, bpm, unitCell.subdivisions)
+        newNote.time_on = newTimeOn;
+        newNote.duration -= diff;
+        console.log("left changed", newNote.time_on, oldNote.time_on)
+      } else {
+        const [newTimeOff, diff] = snapToGrid(newNote.time_on+newNote.duration, bpm, unitCell.subdivisions)
+        newNote.duration = newTimeOff-newNote.time_on
+      }
+    }
     changeNote({
       trackId: trackIndex,
       noteId: noteIndex,
-      newNote: note
+      newNote
     })
   }
 
@@ -63,7 +86,7 @@ export const Notes = connect(mapStateToProps, mapDispatchToProps)(NotesComponent
 const notePosition = (timeOn, duration, bpm, pitch, unitCellWidth, unitCellHeight) => {
   let cellWidth=(bpm*duration)/60*unitCellWidth;
   let topOffset=unitCellHeight*(127-pitch);
-  let leftOffset=(1+bpm*(timeOn)/60)*unitCellWidth;
+  let leftOffset=50 + (bpm*(timeOn)/60)*unitCellWidth;
 
   return {
     height: `${unitCellHeight}px`,
@@ -103,10 +126,6 @@ class Note extends PureComponent{
     this.adjustRightPoint = this.adjustRightPoint.bind(this)
   }
 
-  componentWillUnmount() {
-    
-  }
-
   adjustLeftPoint(dX){
     console.log("params:", this.state.timeOn, this.state.bpm, this.state.unitCellWidth)
     const initialX = pixelsToSeconds(this.state.timeOn, this.state.bpm, this.state.unitCellWidth)
@@ -144,6 +163,7 @@ class Note extends PureComponent{
             onDrag={this.adjustLeftPoint}/>
 
       </div>
+
       <div>
         <Handlebar 
           noteIndex={this.state.noteIndex} 

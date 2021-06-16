@@ -9,6 +9,7 @@
   box-sizing: border-box;
   border-left: 2px solid rgba(0, 0, 255, .4);
   border-bottom: 1px solid green;
+  border-top: 1px solid green;
 } /*aeu  eu*/
 
 .natural {
@@ -45,4 +46,15 @@
   position: absolute;
   top: 0px;
   height: 100%;
+}
+.subdivision {
+  width: 2px;
+  background-color: rgba(50,50,50,.3);
+  position: absolute;
+  top: 0px;
+  height: 100%;
+}
+.header {
+  background-color: whitesmoke;
+  z-index: 3
 }
