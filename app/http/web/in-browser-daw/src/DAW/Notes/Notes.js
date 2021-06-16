@@ -22,17 +22,15 @@ const mapDispatchToProps = dispatch => {
 export const NotesComponent = ({bpm, changeNote}) => {
   const unitCell = useSelector(getUnitCell)
   let unitCellHeight = unitCell.height//(useSelector(state => state.settings.unitCell.height));
-  let unitCellWidth = unitCell.oneBeathWidth //(useSelector(state => state.settings.unitCell.oneBeatWidth));
+  let unitCellWidth = unitCell.oneBeatWidth //(useSelector(state => state.settings.unitCell.oneBeatWidth));
   let tracks = useSelector(DAWvisibleTracks)
   
   const updateNote = (trackIndex, noteIndex, note) => {
-    console.log('note', note)
     changeNote({
       trackId: trackIndex,
       noteId: noteIndex,
       newNote: note
     })
-    console.log("endedup changeing the note")
   }
 
   const InteractiveNote = ({note, trackIndex, noteIndex}) => {

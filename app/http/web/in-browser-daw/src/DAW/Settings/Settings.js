@@ -34,9 +34,7 @@ const SetBPM = ({initialBPM, setBPM }) => {
 
 const SettingsComponent=({toggleTrackVisibility, setBPM}) => {
   const tracks = useSelector(fetchTracks)
-  console.log('tracks', tracks)
   const bpm = useSelector(BPM)
-  console.log('settings', bpm)
 
   const ToggleTracks = () => {
     return tracks.map((track, id) => {
@@ -52,8 +50,8 @@ const SettingsComponent=({toggleTrackVisibility, setBPM}) => {
   }
   return <>
     <Grid container item xs={12} direction="row" spacing={2}>
-      <Grid item> <ToggleTracks /></Grid>
-      <Grid item> <SetBPM setBPM={setBPM} initialBPM={bpm}/> </Grid>
+      {/* <Grid item> <ToggleTracks /></Grid>
+      <Grid item> <SetBPM setBPM={setBPM} initialBPM={bpm}/> </Grid> */}
     </Grid>
   </>
 }
