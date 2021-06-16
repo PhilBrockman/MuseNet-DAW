@@ -142,10 +142,11 @@ class Note extends PureComponent{
     // console.log('this.style', this.state.style)
     return <div className="note" style={this.state.style}>
       <div>
-        <Handlebar 
-          noteIndex={this.state.noteIndex} 
-          trackIndex={this.state.trackIndex}
-          onDrag={this.adjustLeftPoint}/>
+          <Handlebar 
+            noteIndex={this.state.noteIndex} 
+            trackIndex={this.state.trackIndex}
+            onDrag={this.adjustLeftPoint}/>
+
       </div>
       <div>
         <Handlebar 

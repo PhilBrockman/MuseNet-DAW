@@ -28,8 +28,10 @@ const fetchTracksById = async (id) => {
   return await api.getTracks(id)
 }
 
-export const DAWComponent = ({DAW, setTracks}) => {
+export const DAWComponent = ({setTracks}) => {
+  const DAW = useSelector(state => state.DAW)
   const parentId = useSelector(selectParent)
+  const visibleTracks = DAW.tracks.filter(track => track.visible)
 
   //update the tracks based on the parent
   React.useEffect(() => {
@@ -43,7 +45,7 @@ export const DAWComponent = ({DAW, setTracks}) => {
     };
   }, [parentId, setTracks])
 
-  const visibleTracks = DAW.tracks.filter(track => track.visible)
+  
 
   if(parentId){
     return <Container>
@@ -64,14 +66,23 @@ export const DAWComponent = ({DAW, setTracks}) => {
   }
 }
 
-const DAWcell = ({content, additonalClasses}) => {
-  const DAWcellStyle = useSelector(state => state.DAW.unitCell.style)
+const DAWcell = ({content, additonalClasses, fixedWidth=false}) => {
+  const unitCell = useSelector(state => state.DAW.unitCell)
+  // const bpm = useSelector(state => state.DAW.bpm)
   let allClasses = ["daw-cell"];
   if(additonalClasses?.length > 0){
     allClasses = [...allClasses, ...additonalClasses]
   }
+  const width= fixedWidth ? 50 : unitCell.oneBeatWidth;
+  const height = unitCell.style.height
+  return <div className={allClasses.join(" ")} style={{width: `${width}px`, height}}>{content}</div>
+}
 
-  return <div className={allClasses.join(" ")} style={DAWcellStyle}>{content}</div>
+const BoxColumn = ({header, numKeys}) => {
+  return <div className="column">
+      <DAWcell content={header} />
+      {   Array.from(Array(numKeys).keys()).map(box => <DAWcell key={box}/>)  }
+  </div>
 }
 
 class DAWBackground extends PureComponent {
@@ -84,46 +95,32 @@ class DAWBackground extends PureComponent {
     let filteredKeys = Object.keys(keymaps)//.filter((item) => (item >= minNote && item <= maxNote))
     let totalLengthInSeconds = Math.ceil(Math.max.apply(Math, notes.map(function(o) { return o.time_on+o.duration; })))
     let numBeats = Math.ceil(totalLengthInSeconds*bpm/60);
+
     let boxes = Array.from(Array(numBeats).keys())
 
     let pianoKeys = filteredKeys.map((item, idx) => {
       let c = keymaps[item].includes("#") ? "accidental" : "natural";
-      return <DAWcell 
-                key={idx}
-                content={keymaps[item]}
-                additonalClasses={[c, "keyNote"]}/>
+      return <DAWcell fixedWidth key={idx} additonalClasses={[c].join(" ")} content={keymaps[item]} />
     })
 
-    let header = <div className="key-row">
-                      <DAWcell />
-                      {boxes.map((item, idx) => {
-                        return <DAWcell key={idx} content={idx}/>
-                      })}
-                  </div>
-
-    let body = filteredKeys.map((item, idx) => {
-      let b = boxes.map((item, idx) => {
-        return <DAWcell additonalClasses={["background-cell"]} key={"beats"+idx}/>
-      })
-      return <div className="key-row" key={idx}>
-        <DAWcell 
-                key={idx}
-                content={pianoKeys[idx]}
-                additonalClasses={["accidental", "keyNote"]}/>
-        {b}
-      </div>
+    let openingColumn = <div className="column">
+      <DAWcell fixedWidth />
+      {pianoKeys}
+    </div>
+    
+    
+    let body = boxes.map((box) => {
+      return <BoxColumn key={box} header={box} numKeys={pianoKeys.length}/>
     })
 
-    this.state = {header, body}
+    this.state = {openingColumn, body}
   }
 
   render(){
     return <>
-      <div >
-        {this.state.header}
-        <div>
-          {this.state.body}
-        </div>
+      <div className="row">
+        {this.state.openingColumn}
+        {this.state.body}
       </div>
     </>
   }

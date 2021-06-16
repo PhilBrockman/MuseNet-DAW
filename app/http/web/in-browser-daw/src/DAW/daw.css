@@ -22,16 +22,24 @@
   color:white;
 }
 
+.fixed-width{
+  min-width: 50px;
+  background-color: green;
+}
+
 .background-cell {
   background-color: rgba(50,50,50,.3);
 }
 
-.key-row {
+.row {
   display: flex;
   flex-direction: row;
 }
 
-
+.column{
+  display: flex;
+  flex-direction: column;
+}
 .playhead {
   width: 4px;
   background-color: black;

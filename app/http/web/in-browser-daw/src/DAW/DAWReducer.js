@@ -8,7 +8,8 @@ const defaultState = {
     style: {
       width: "45px",
       height:"30px",
-    }
+    },
+    oneBeatWidth: 145,
   }
 }
 
