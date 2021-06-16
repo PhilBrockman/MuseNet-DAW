@@ -2,12 +2,14 @@ import React, { PureComponent } from 'react';
 import {useSelector, connect} from "react-redux"
 import Draggable from 'react-draggable'
 import {pixelsToSeconds} from "../../utilities/utilities"
+import {getUnitCell} from "../Settings/SettingsReducer"
+import {DAWvisibleTracks} from "../DAWReducer"
 import "./Notes.css"
 
 let COLORS = ["red", "blue", "green"]
 
 const mapStateToProps = state => {
-  return state;
+  return state.DAW;
 };
 
 const mapDispatchToProps = dispatch => {
@@ -18,9 +20,10 @@ const mapDispatchToProps = dispatch => {
 
 
 export const NotesComponent = ({bpm, changeNote}) => {
-  let unitCellHeight= (useSelector(state => state.settings.unitCell.height));
-  let unitCellWidth = (useSelector(state => state.settings.unitCell.oneBeatWidth));
-  let tracks = useSelector(state => state.DAW.tracks.filter(track => track.visible))
+  const unitCell = useSelector(getUnitCell)
+  let unitCellHeight = unitCell.height//(useSelector(state => state.settings.unitCell.height));
+  let unitCellWidth = unitCell.oneBeathWidth //(useSelector(state => state.settings.unitCell.oneBeatWidth));
+  let tracks = useSelector(DAWvisibleTracks)
   
   const updateNote = (trackIndex, noteIndex, note) => {
     console.log('note', note)

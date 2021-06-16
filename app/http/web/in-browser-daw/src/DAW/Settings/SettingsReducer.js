@@ -22,9 +22,15 @@ export const SettingsReducer = function (state = defaultState, action) {
   }
 };
 
-const selectBPM = state => state.settings
+const selectSettings = state => state.settings
 
 export const BPM = createSelector(
-  selectBPM,
+  selectSettings,
   settings => settings.bpm
+)
+
+
+export const getUnitCell = createSelector(
+  selectSettings,
+  settings => settings.unitCell
 )

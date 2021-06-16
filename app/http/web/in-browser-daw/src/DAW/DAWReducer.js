@@ -65,4 +65,3 @@ export const DAWvisibleTracks = createSelector(
   getDAW,
   DAW => DAW.tracks.filter(track => track.visible)
 )
-

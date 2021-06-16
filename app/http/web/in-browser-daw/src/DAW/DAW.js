@@ -5,6 +5,7 @@ import {Container, Grid} from '@material-ui/core';
 import {keymaps} from "../utilities/keymaps"
 import {Notes} from "./Notes/Notes"
 import {Settings} from "./Settings/Settings"
+import {getUnitCell} from "./Settings/SettingsReducer"
 import {Playhead} from "./Playhead/Playhead"
 import {reduceNotes} from "../utilities/utilities"
 
@@ -39,7 +40,6 @@ export const DAWComponent = ({setTracks}) => {
   const bpm = useSelector(BPM)
   let totalLengthInSeconds = Math.ceil(Math.max.apply(Math, reduceNotes(visibleTracks).map(function(o) { return o.time_on+o.duration; })))
 
-  // return "simplyfier"
   //update the tracks based on the parent
   React.useEffect(() => {
     console.log("parentChanged", parentId)
@@ -72,7 +72,8 @@ export const DAWComponent = ({setTracks}) => {
 }
 
 const DAWcell = ({content, additonalClasses, fixedWidth=false}) => {
-  const unitCell = useSelector(state => state.settings.unitCell)
+  const unitCell = useSelector(getUnitCell)
+
   let allClasses = ["daw-cell"];
   if(additonalClasses?.length > 0){
     allClasses = [...allClasses, ...additonalClasses]
