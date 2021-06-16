@@ -7,13 +7,10 @@
 .daw-cell {
   text-align: center;
   box-sizing: border-box;
-  border-left: 2px solid rgba(0, 0, 255, .4);
-  border-bottom: 1px solid green;
-  border-top: 1px solid green;
 } /*aeu  eu*/
 
 .natural {
-  background-color:white;
+  background-color:whitesmoke;
   color:black;
 
 }
@@ -53,6 +50,12 @@
   position: absolute;
   top: 0px;
   height: 100%;
+}
+.horizontal-division{
+  height: 2px;
+  background-color: rgba(50,50,50,.3);
+  position: absolute;
+  top: 0px;
 }
 .header {
   background-color: whitesmoke;
