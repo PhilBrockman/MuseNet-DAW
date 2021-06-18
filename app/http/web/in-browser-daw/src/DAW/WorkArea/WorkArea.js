@@ -61,7 +61,6 @@ export const WorkArea = ({bpm, totalLengthInSeconds}) => {
         <div style={{position: "absolute"}} className="row">
           <BeatsHeader numKeys={filteredKeys.length} numBeats={numBeats}/>
         </div>
-        {notes}
         <div style={{position: "absolute", marginTop: unitCell.headers.beatCounterHeight}}>
           <HorizontalDividers numBeats={numBeats}  numKeys={filteredKeys.length}/>
         </div>
@@ -74,6 +73,7 @@ export const WorkArea = ({bpm, totalLengthInSeconds}) => {
                     initialOffset={playheadPosition}
                     />
         </div>
+        <Notes bpm={bpm} />
       </div>
     </div>
 
