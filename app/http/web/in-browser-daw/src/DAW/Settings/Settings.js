@@ -1,8 +1,7 @@
 import React from 'react';
-import { Grid, Checkbox, FormControlLabel, TextField, InputAdornment} from '@material-ui/core';
+import { Grid, Button, Checkbox, FormControlLabel, TextField, InputAdornment} from '@material-ui/core';
 import { connect, useSelector } from 'react-redux';
 import {fetchTracks} from "../DAWReducer"
-import {BPM} from "./SettingsReducer"
 
 
 const mapStateToProps = state => {
@@ -12,29 +11,32 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     setBPM: (item) => dispatch({type: "SET_BPM", payload: item}),
+    setSubdivisions: (item) => dispatch({type: "SET_SUBDIVISIONS", payload: item}),
     toggleTrackVisibility: (id) => dispatch({type: "TOGGLE_TRACK_VISIBILITY", payload: id}),
   }
 };
 
-const SetBPM = ({initialBPM, setBPM }) => {
-  const [value, setValue] = React.useState(initialBPM)
-  React.useEffect(() => {
-    
-    setBPM(parseInt(value))
-  }, [value, setBPM])
-  return <TextField
+const SetSettings = ({initialValue, dispatch, adornment}) => {
+  const [value, setValue] = React.useState(initialValue)
+  const update = () => {
+    dispatch(parseInt(value))
+  }
+  return <>
+          <TextField
             size="small"
              value={value}
-             onChange={e => setValue(parseInt(e.target.value))}
+             onChange={e => setValue(e.target.value)}
              InputProps={{
-               endAdornment: <InputAdornment position="end">BPM</InputAdornment>,
+               endAdornment: <InputAdornment position="end">{adornment}</InputAdornment>,
              }}
            />
- }
+           <Button onClick={update}>Update</Button>
+          </>
+}
 
-const SettingsComponent=({toggleTrackVisibility, setBPM}) => {
+const SettingsComponent=({toggleTrackVisibility, setBPM, setSubdivisions}) => {
   const tracks = useSelector(fetchTracks)
-  const bpm = useSelector(BPM)
+  const settings = useSelector(state => state.settings)
 
   const ToggleTracks = () => {
     return tracks.map((track, id) => {
@@ -51,7 +53,8 @@ const SettingsComponent=({toggleTrackVisibility, setBPM}) => {
   return <>
     <Grid container item xs={12} direction="row" spacing={2}>
       <Grid item> <ToggleTracks /></Grid>
-      <Grid item> <SetBPM setBPM={setBPM} initialBPM={bpm}/> </Grid>
+      <Grid item> <SetSettings dispatch={setBPM} initialValue={settings.bpm} adornment={"BPM"}/> </Grid>
+      <Grid item> <SetSettings dispatch={setSubdivisions} initialValue={settings.unitCell.subdivisions} adornment={"Subdivisions"}/> </Grid>
     </Grid>
   </>
 }

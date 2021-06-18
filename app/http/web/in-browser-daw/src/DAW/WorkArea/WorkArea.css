@@ -1,0 +1,56 @@
+* {
+
+  box-sizing: border-box;
+}
+
+.daw {
+  overflow:scroll;
+  position: relative;
+}
+
+.daw-cell {
+  text-align: center;
+} 
+
+.natural {
+  background-color:whitesmoke;
+  color:black;
+
+}
+.accidental {
+  background-color: black;
+  color:white;
+}
+
+.background-cell {
+  background-color: rgba(50,50,50,.3);
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+}
+
+.column{
+  display: flex;
+  flex-direction: column;
+}
+.dark{
+  background-color: rgba(51, 50, 50, 0.377);
+}
+.light {
+  background-color: rgba(189, 185, 185, 0.377);
+}
+
+.subdivision {
+  width: 2px;
+  background-color: rgba(50,50,50,.3);
+}
+.horizontal-division{
+  height: 2px;
+  background-color: rgba(50,50,50,.3);
+}
+.header {
+  background-color: whitesmoke;
+  z-index: 3;
+}

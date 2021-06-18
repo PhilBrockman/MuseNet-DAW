@@ -2,7 +2,7 @@
 import React from 'react'
 import { useSelector, connect } from 'react-redux';
 import {Container, Grid} from '@material-ui/core';
-import {WorkArea} from "./WorkArea"
+import {WorkArea} from "./WorkArea/WorkArea"
 import {Settings} from "./Settings/Settings"
 import {reduceNotes} from "../utilities/utilities"
 

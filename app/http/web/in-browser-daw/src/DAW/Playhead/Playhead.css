@@ -1,0 +1,7 @@
+
+.playhead {
+  width: 4px;
+  background-color: black;
+  cursor: ew-resize;
+  z-index: 3;
+}

@@ -6,9 +6,13 @@ const defaultState = {
 export const playheadReducer = function (state = defaultState, action) {
   switch (action.type) {
     case "SET_PLAYHEAD":
+      let newPosition = action.payload
+      if(action.payload < 0 ){
+        newPosition = 0
+      }
       return {
         ...state,
-        position: action.payload
+        position: newPosition
       }
     case "PLAY":
       return {

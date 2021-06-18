@@ -3,10 +3,13 @@
 import React from 'react'
 import { useSelector } from 'react-redux';
 
-import {keymaps} from "../utilities/keymaps"
-import {Notes} from "./Notes/Notes"
-import {getUnitCell} from "./Settings/SettingsReducer"
-import {Playhead} from "./Playhead/Playhead"
+import {keymaps} from "../../utilities/keymaps"
+import {Notes} from "../Notes/Notes"
+import {getUnitCell} from "../Settings/SettingsReducer"
+import {Playhead} from "../Playhead/Playhead"
+
+import "./WorkArea.css"
+import { store } from '../../rootReducer';
 
 const DAWcell = ({content, additionalClasses, headerWidth=false, headerHeight=false}) => {
   const unitCell = useSelector(getUnitCell)
@@ -26,34 +29,23 @@ export const WorkArea = ({bpm, totalLengthInSeconds}) => {
   // const midi= tracksToJSON(tracks)
 
   const unitCell = useSelector(getUnitCell)
+  const playheadPosition = useSelector(state => state.playhead.position)
+
   if(totalLengthInSeconds <= 0) return "Select tracks"
 
   const reposition = (n, nodeRef) => {
-    nodeRef.current.style.left = `${parseInt(nodeRef.current.style.left || 0)+n}px`
+    store.dispatch({type: "SET_PLAYHEAD", payload: 300})
   }
 
   const filteredKeys = Object.keys(keymaps)
 
   let numBeats = Math.ceil(totalLengthInSeconds*bpm/60);
-  let boxes = Array.from(Array(numBeats).keys())
 
   let pianoKeys = filteredKeys.map((item, idx) => {
     let c = keymaps[item].includes("#") ? "accidental" : "natural";
     return <DAWcell headerWidth key={idx} additionalClasses={[c]} content={keymaps[item]} />
   })
-
-  const overallHeight = filteredKeys.length*unitCell.height + unitCell.headers.beatCounterHeight
-  let beatsHeader = boxes.map((box) => {
-      const color = box % 2 === 1 ? "light" : "dark";
-      return <div key={box} style={{  
-                  height: overallHeight, 
-                  left: unitCell.oneBeatWidth*box
-                  }} 
-                className={color}>
-          <DAWcell headerHeight numKeys={pianoKeys.length} content={box}/>
-        </div>
-    })
-  
+ 
 
 
   let notes = <div style={{position: "absolute"}}></div>
@@ -66,7 +58,9 @@ export const WorkArea = ({bpm, totalLengthInSeconds}) => {
         </div>
       </div>
       <div>
-        <div style={{position: "absolute"}} className="row">{beatsHeader}</div>
+        <div style={{position: "absolute"}} className="row">
+          <BeatsHeader numKeys={filteredKeys.length} numBeats={numBeats}/>
+        </div>
         {notes}
         <div style={{position: "absolute", marginTop: unitCell.headers.beatCounterHeight}}>
           <HorizontalDividers numBeats={numBeats}  numKeys={filteredKeys.length}/>
@@ -74,27 +68,30 @@ export const WorkArea = ({bpm, totalLengthInSeconds}) => {
         <div style={{position:"absolute"}} className="row">
           <VerticalDividers numBeats={numBeats} numKeys={filteredKeys.length}/>
         </div>
+        <div style={{position: "absolute"}}>
+          <Playhead reposition={reposition} 
+                    height={filteredKeys.length*unitCell.height}
+                    initialOffset={playheadPosition}
+                    />
+        </div>
       </div>
     </div>
 
+}
 
-
-  // let body = boxes.map((box) => {
-  //   return <BoxColumn key={box} header={box} numKeys={pianoKeys.length}/>
-  // })
-
-  // return <>
-  
-  // {/* <button onClick={() => playMidi(midi)}>Will this play anthynig???</button> */}
-  //     <div className="daw">
-  //       <Subdivisions numBeats={numBeats} />
-  //       {horizontalDividers}
-  //       <Notes bpm={bpm} />
-  //       <DAWBackground body={body} pianoKeys={pianoKeys} />
-        
-  //       <Playhead reposition={reposition}/>
-  //     </div>
-  // </>
+const BeatsHeader = ({numKeys, numBeats}) => {
+  const unitCell = useSelector(getUnitCell)
+  const overallHeight = numKeys*unitCell.height + unitCell.headers.beatCounterHeight
+  return  Array.from(Array(numBeats).keys()).map((box) => {
+    const color = box % 2 === 1 ? "light" : "dark";
+    return <div key={box} style={{  
+                height: overallHeight, 
+                left: unitCell.oneBeatWidth*box
+                }} 
+              className={color}>
+        <DAWcell headerHeight numKeys={numKeys} content={box}/>
+      </div>
+  })
 }
 
 const HorizontalDividers = ({numKeys, numBeats}) => {

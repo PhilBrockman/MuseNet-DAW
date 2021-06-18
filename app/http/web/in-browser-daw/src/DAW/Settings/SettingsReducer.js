@@ -17,6 +17,14 @@ const defaultState = {
 
 export const SettingsReducer = function (state = defaultState, action) {
   switch (action.type) {
+    case "SET_SUBDIVISIONS":
+      return {
+        ...state,
+        unitCell: {
+          ...state.unitCell,
+          subdivisions: action.payload
+        }
+      }
     case "SET_BPM":
       return {
         ...state,
