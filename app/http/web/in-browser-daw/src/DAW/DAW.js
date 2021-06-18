@@ -55,7 +55,6 @@ export const DAWComponent = ({setTracks}) => {
         <Grid item>
           <Settings />
         </Grid>
-        <Grid item>{JSON.stringify(tracks)}}</Grid>
         <Grid item>
           <WorkArea 
               totalLengthInSeconds={totalLengthInSeconds}

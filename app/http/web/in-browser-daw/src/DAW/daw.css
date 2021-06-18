@@ -1,3 +1,7 @@
+* {
+
+  box-sizing: border-box;
+}
 
 .daw {
   overflow:scroll;
@@ -6,8 +10,8 @@
 
 .daw-cell {
   text-align: center;
-  box-sizing: border-box;
-} /*aeu  eu*/
+  border: 1px solid black;
+} 
 
 .natural {
   background-color:whitesmoke;
@@ -17,11 +21,6 @@
 .accidental {
   background-color: black;
   color:white;
-}
-
-.fixed-width{
-  min-width: 50px;
-  background-color: green;
 }
 
 .background-cell {
@@ -37,6 +36,13 @@
   display: flex;
   flex-direction: column;
 }
+.dark{
+  background-color: rgba(51, 50, 50, 0.377);
+}
+.light {
+  background-color: rgba(189, 185, 185, 0.377);
+}
+
 .playhead {
   width: 4px;
   background-color: black;
@@ -47,17 +53,13 @@
 .subdivision {
   width: 2px;
   background-color: rgba(50,50,50,.3);
-  position: absolute;
-  top: 0px;
-  height: 100%;
 }
 .horizontal-division{
   height: 2px;
   background-color: rgba(50,50,50,.3);
-  position: absolute;
-  top: 0px;
 }
 .header {
   background-color: whitesmoke;
-  z-index: 3
+  z-index: 3;
+  
 }

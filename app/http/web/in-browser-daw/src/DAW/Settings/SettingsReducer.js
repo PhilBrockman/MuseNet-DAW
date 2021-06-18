@@ -4,10 +4,14 @@ import { createSelector } from 'reselect'
 const defaultState = {
   bpm: 120,
   unitCell: {
-    height: 25,
+    height: 20,
     oneBeatWidth: 144,
-    subdivisions: 8,
+    subdivisions: 4,
     snapToArray: true,
+    headers: {
+      pianoKeyWidth: 150,
+      beatCounterHeight: 100,
+    }
   },
 }
 
