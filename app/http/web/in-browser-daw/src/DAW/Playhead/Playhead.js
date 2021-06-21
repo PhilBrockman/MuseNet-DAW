@@ -5,7 +5,7 @@ import Draggable from 'react-draggable'; // The default
 import "./Playhead.css"
 
 const mapStateToProps = state => {
-  return state;
+  return state.playhead;
 };
 
 const mapDispatchToProps = dispatch => {

@@ -1,6 +1,7 @@
 const defaultState = {
   playing: false,
   position: 0,
+  synths: [],
 }
 
 export const playheadReducer = function (state = defaultState, action) {
@@ -13,6 +14,11 @@ export const playheadReducer = function (state = defaultState, action) {
       return {
         ...state,
         position: newPosition
+      }
+    case "SET_SYNTHS":
+      return {
+        ...state,
+        synths: action.payload
       }
     // case "PLAY":
     //   return {
