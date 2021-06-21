@@ -14,15 +14,20 @@ export const playheadReducer = function (state = defaultState, action) {
         ...state,
         position: newPosition
       }
-    case "PLAY":
+    // case "PLAY":
+    //   return {
+    //     ...state,
+    //     playing: true
+    //   }
+    // case "PAUSE":
+    //   return {
+    //     ...state,
+    //     playing: true
+    //   }
+    case "PLAY/PAUSE":
       return {
         ...state,
-        playing: true
-      }
-    case "PAUSE":
-      return {
-        ...state,
-        playing: true
+        playing: !state.playing
       }
     default:
       return state;

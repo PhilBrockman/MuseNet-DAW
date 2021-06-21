@@ -33,27 +33,12 @@ export const NotesComponent = ({bpm, changeNote}) => {
   let unitCellWidth = unitCell.oneBeatWidth //(useSelector(state => state.settings.unitCell.oneBeatWidth));
   let tracks = useSelector(DAWvisibleTracks)
   
-  const updateNote = (trackIndex, noteIndex, note) => {
-    const newNote = {...note}
-    const oldNote = tracks[trackIndex].notes[noteIndex]
-    console.log({oldNote, newNote})
-    if(unitCell.snapToArray){
-      console.log("unit cell snapeed")
-      //check if left changed
-      if(newNote.time_on !== oldNote.time_on){
-        const [newTimeOn, diff] = snapToGrid(newNote.time_on, bpm, unitCell.subdivisions)
-        newNote.time_on = newTimeOn;
-        newNote.duration -= diff;
-        console.log("left changed", newNote.time_on, oldNote.time_on)
-      } else {
-        const [newTimeOff, diff] = snapToGrid(newNote.time_on+newNote.duration, bpm, unitCell.subdivisions)
-        newNote.duration = newTimeOff-newNote.time_on
-      }
-    }
+  const updateNote = ({trackIndex, noteIndex, note}) => {
+    console.log('note', note)
     changeNote({
       trackId: trackIndex,
       noteId: noteIndex,
-      newNote
+      newNote: note,
     })
   }
 
@@ -83,11 +68,14 @@ export const NotesComponent = ({bpm, changeNote}) => {
 
 export const Notes = connect(mapStateToProps, mapDispatchToProps)(NotesComponent);
 
+const secondsToPixels = ({bpm, seconds, unitCellWidth}) => {
+  return (bpm*parseFloat(seconds))/60*unitCellWidth
+}
 
 const notePosition = (timeOn, duration, bpm, pitch, unitCellWidth, unitCellHeight) => {
-  let cellWidth=(bpm*duration)/60*unitCellWidth;
-  let topOffset=unitCellHeight + unitCellHeight*(127-pitch);
-  let leftOffset=50 + (bpm*(timeOn)/60)*unitCellWidth;
+  let cellWidth=secondsToPixels({bpm, unitCellWidth, seconds: duration});
+  let topOffset=unitCellHeight*pitch;
+  let leftOffset=secondsToPixels({bpm, unitCellWidth, seconds: timeOn});
 
   return {
     height:  unitCellHeight,
@@ -97,33 +85,56 @@ const notePosition = (timeOn, duration, bpm, pitch, unitCellWidth, unitCellHeigh
   }
 }
 
+const pixeledNoteToNote = ({x, y, width, bpm, unitCell, snap}) => {
+  const time_on = pixelsToSeconds(
+            snap.left ? roundToMultiple({num: x, unit: unitCell.oneBeatWidth/unitCell.subdivisions}): x, 
+            bpm, 
+            unitCell.oneBeatWidth)
+  const newPitch = roundToMultiple({num: y, unit: unitCell.height})/unitCell.height
+
+  const left = secondsToPixels({seconds: time_on, bpm, unitCellWidth:unitCell.oneBeatWidth})
+  console.log('left', left)
+  const normedWidth =  snap.right ? 
+                                  roundToMultiple({num: left+width, unit: unitCell.oneBeatWidth/unitCell.subdivisions}) :
+                                  left+width; 
+
+  const newDuration = parseFloat(normedWidth-left)/unitCell.oneBeatWidth*60/bpm
+  // console.log(style)
+  // console.log("old info: ", {timeOn, pitch, duration})
+  // console.log('{width, unitCellWidth, bpm}', {time_on, newPitch, newDuration})
+  return {time_on, pitch:newPitch, duration: newDuration}
+
+}
+const roundToMultiple =({num, unit}) => {
+  return Math.round(parseFloat(num)/unit)*unit
+}
+
 const Note = ({timeOn, pitch, duration, bpm, color, unitCellWidth, 
   unitCellHeight, noteIndex, trackIndex, updateNote} ) => {
     const unitCell = useSelector(getUnitCell)
-    const scales = {
-      dragGrid: {x: 0, y:unitCell.height},
-      resizeGrid: {x: 1, y:1}
-    }
-      
-    if(unitCell.snapToArray){
-      scales.dragGrid.x = unitCell.oneBeatWidth/unitCell.subdivisions
-      scales.resizeGrid.x = unitCell.oneBeatWidth/unitCell.subdivisions
-    }
+    const snap = useSelector(state => state.settings.snap)
 
     let style = notePosition(timeOn, duration, bpm, pitch, unitCellWidth, unitCellHeight)
     style.backgroundColor = color
 
-    const resizeHandler = (e, d, r) => {
-      console.log("I resized!", d, r?.style.x)
+    const resizeHandler = (e, d, ref, delta, position) => {
+      updateNote({noteIndex, trackIndex, note: pixeledNoteToNote({
+        x: position.x,
+        y: position.y,
+        width: parseFloat(ref.style.width),
+        bpm, unitCell, snap
+      })})
     }
 
-    const dragHandler = (e, d) => {
-      const change = {
-        x: style.left,
-        y: style.top,
 
-      }
-      console.log("I dragged!", change, d.lastX, d.lastY)
+    const dragHandler = (e, d) => {
+      console.log('unitCell', unitCell)
+      updateNote({noteIndex, trackIndex, note: pixeledNoteToNote({
+        x: d.x,
+        y: d.y,
+        width: parseFloat(d.node.style.width),
+        bpm, unitCell, snap
+      })})
     }
 
     return     <Rnd
@@ -135,8 +146,8 @@ const Note = ({timeOn, pitch, duration, bpm, color, unitCellWidth,
               }}
               style={{backgroundColor: color}}
               enableResizing={{ top:false, right:true, bottom:false, left:true, topRight:false, bottomRight:false, bottomLeft:false, topLeft:false }}
-              dragGrid={[scales.dragGrid.x, scales.dragGrid.y]}
-              resizeGrid={[scales.resizeGrid.x, 1]}
+              dragGrid={[1, unitCell.height]}
+              resizeGrid={[1, 1]}
               onResizeStop={resizeHandler}
               onDragStop={dragHandler}
               >

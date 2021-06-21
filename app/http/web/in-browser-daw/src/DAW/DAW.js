@@ -1,7 +1,7 @@
-
 import React from 'react'
 import { useSelector, connect } from 'react-redux';
 import {Container, Grid} from '@material-ui/core';
+import {PlayheadControls} from "./Playhead/PlayheadControls"
 import {WorkArea} from "./WorkArea/WorkArea"
 import {Settings} from "./Settings/Settings"
 import {reduceNotes} from "../utilities/utilities"
@@ -11,9 +11,6 @@ import {BPM} from "./Settings/SettingsReducer"
 import {selectParent} from "../layout/generations/parentReducer"
 import api from "../api/apiClient";
 import "./daw.css"
-
-// import {tracksToJSON, playMidi} from "../utilities/MIDIfier"
-
 
 const mapStateToProps = state => {
   return state.DAW;
@@ -32,7 +29,6 @@ const fetchTracksById = async (id) => {
 export const DAWComponent = ({setTracks}) => {
   const parentId = useSelector(selectParent)
   const tracks = useSelector(fetchTracks)
-  console.log("I'm rerendering", tracks)
 
   const bpm = useSelector(BPM)
   let totalLengthInSeconds = Math.ceil(Math.max.apply(Math, reduceNotes(tracks.filter(track=> track.visible)).map(function(o) { return o.time_on+o.duration; })))
@@ -42,7 +38,6 @@ export const DAWComponent = ({setTracks}) => {
     console.log("parentChanged", parentId)
     if(parentId) {
       fetchTracksById(parentId).then(res => {
-        console.log('res.data', res.data)
         setTracks(res.data)
       })
       
@@ -54,6 +49,7 @@ export const DAWComponent = ({setTracks}) => {
       <Grid>
         <Grid item>
           <Settings />
+          <PlayheadControls />
         </Grid>
         <Grid item>
           <WorkArea 
@@ -67,7 +63,6 @@ export const DAWComponent = ({setTracks}) => {
     return "no parents"
   }
 }
-
 
 export const DAW = connect(mapStateToProps, mapDispatchToProps)(DAWComponent);
 

@@ -26,8 +26,6 @@ const DAWcell = ({content, additionalClasses, headerWidth=false, headerHeight=fa
 }
 
 export const WorkArea = ({bpm, totalLengthInSeconds}) => {
-  // const midi= tracksToJSON(tracks)
-
   const unitCell = useSelector(getUnitCell)
   const playheadPosition = useSelector(state => state.playhead.position)
 
@@ -47,9 +45,6 @@ export const WorkArea = ({bpm, totalLengthInSeconds}) => {
   })
  
 
-
-  let notes = <div style={{position: "absolute"}}></div>
-
   return <div className="row">
       <div className="column">
         <DAWcell headerWidth headerHeight />
@@ -61,10 +56,10 @@ export const WorkArea = ({bpm, totalLengthInSeconds}) => {
         <div style={{position: "absolute"}} className="row">
           <BeatsHeader numKeys={filteredKeys.length} numBeats={numBeats}/>
         </div>
-        <div style={{position: "absolute", marginTop: unitCell.headers.beatCounterHeight}}>
+        <div style={{position: "absolute", marginTop: unitCell.headers.beatCounterHeight-1}}>
           <HorizontalDividers numBeats={numBeats}  numKeys={filteredKeys.length}/>
         </div>
-        <div style={{position:"absolute"}} className="row">
+        <div style={{position:"absolute", }} className="row">
           <VerticalDividers numBeats={numBeats} numKeys={filteredKeys.length}/>
         </div>
         <div style={{position: "absolute"}}>

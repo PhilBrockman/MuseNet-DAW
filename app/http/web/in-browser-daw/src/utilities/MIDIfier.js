@@ -19,9 +19,8 @@ export const tracksToJSON = (tracks) => {
 }
 
 
-export const playMidi = (currentMidi) => {
-  const synths=[]
-  if (currentMidi) {
+export const playMidi = ({currentMidi, playing, synths}) => {
+  if (currentMidi && playing) {
     const now = Tone.now() + 0.5;
     currentMidi.tracks.forEach((track) => {
       //create a synth for each track
@@ -37,21 +36,15 @@ export const playMidi = (currentMidi) => {
       //schedule all of the events
       track.notes.forEach((note) => {
         if( note.duration > 0 ){
-        synth.triggerAttackRelease(
-          note.name,
-          note.duration,
-          note.time + now,
-          note.velocity
-        );
+          synth.triggerAttackRelease(
+            note.name,
+            note.duration,
+            note.time + now,
+            note.velocity
+          );
         }
       });
     });
-  } else {
-    //dispose the synth and make a new one
-    while (synths.length) {
-      const synth = synths.shift();
-      synth.disconnect();
-    }
   }
 				
 }

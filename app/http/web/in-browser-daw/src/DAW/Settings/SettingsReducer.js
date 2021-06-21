@@ -7,11 +7,14 @@ const defaultState = {
     height: 20,
     oneBeatWidth: 144,
     subdivisions: 4,
-    snapToArray: true,
     headers: {
       pianoKeyWidth: 150,
       beatCounterHeight: 100,
     }
+  },
+  snap: {
+    left: false,
+    right: true,
   },
 }
 
@@ -23,6 +26,14 @@ export const SettingsReducer = function (state = defaultState, action) {
         unitCell: {
           ...state.unitCell,
           subdivisions: action.payload
+        }
+      }
+    case "TOGGLE_SNAPPING":
+      return {
+        ...state,
+        snap: {
+          ...state.snap,
+          [action.payload]: !state.snap[action.payload]
         }
       }
     case "SET_BPM":

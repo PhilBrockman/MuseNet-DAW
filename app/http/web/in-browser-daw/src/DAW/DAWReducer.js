@@ -33,6 +33,7 @@ export const DAWReducer = function (state = defaultState, action) {
         if(trackId === action.payload.trackId){
           const newNotes = track.notes.map((note, noteId) => {
             if(noteId === action.payload.noteId){
+              console.log(action.payload.newNote)
               return action.payload.newNote
             } else {
               return note

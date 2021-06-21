@@ -13,6 +13,7 @@ const mapDispatchToProps = dispatch => {
     setBPM: (item) => dispatch({type: "SET_BPM", payload: item}),
     setSubdivisions: (item) => dispatch({type: "SET_SUBDIVISIONS", payload: item}),
     toggleTrackVisibility: (id) => dispatch({type: "TOGGLE_TRACK_VISIBILITY", payload: id}),
+    toggleSnapping: (handlebar) => dispatch({type: "TOGGLE_SNAPPING", payload: handlebar})
   }
 };
 
@@ -34,7 +35,20 @@ const SetSettings = ({initialValue, dispatch, adornment}) => {
           </>
 }
 
-const SettingsComponent=({toggleTrackVisibility, setBPM, setSubdivisions}) => {
+const SnapToGrid = ({toggler}) => {
+  const snap = useSelector(state => state.settings.snap)
+  console.log('snap', snap)
+  return ["left", "right"].map(handle => <FormControlLabel
+            key={handle}
+            control={<Checkbox 
+              checked={snap[handle]}
+              onChange={() => toggler(handle)}
+              />}
+            label={`snap ${handle}`}
+          /> )
+}
+
+const SettingsComponent=({toggleTrackVisibility, setBPM, setSubdivisions, toggleSnapping}) => {
   const tracks = useSelector(fetchTracks)
   const settings = useSelector(state => state.settings)
 
@@ -55,6 +69,7 @@ const SettingsComponent=({toggleTrackVisibility, setBPM, setSubdivisions}) => {
       <Grid item> <ToggleTracks /></Grid>
       <Grid item> <SetSettings dispatch={setBPM} initialValue={settings.bpm} adornment={"BPM"}/> </Grid>
       <Grid item> <SetSettings dispatch={setSubdivisions} initialValue={settings.unitCell.subdivisions} adornment={"Subdivisions"}/> </Grid>
+      <Grid item> <SnapToGrid toggler={toggleSnapping}/> </Grid>
     </Grid>
   </>
 }
