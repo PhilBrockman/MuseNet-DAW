@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import Draggable from 'react-draggable'; // The default
 
 import "./Playhead.css"
@@ -15,21 +15,12 @@ const mapDispatchToProps = dispatch => {
 };
 
 const PlayheadComponent = ({ setPosition, initialOffset, height, reposition}) => {
+  const playing = useSelector(state => state.playhead.playing)
   const nodeRef = React.useRef(null);
   const style = { height}
   const handleDrag = (e, data) => {
-    // console.log("instance", playhead2.get())
     setPosition(data.lastX)
   }
-
-  // console.log('initialOffset', initialOffset)
-  // const element = React.createElement("div")
-  // const playhead2 = new Draggable(element,
-  //                                       {
-  //                                         axis: "x",
-  //                                         onStop: handleDrag,
-  //                                         defaultPosition: {x: initialOffset, y: 0},
-  //                                       })
 
   return <Draggable 
             axis="x"
